@@ -74,10 +74,10 @@
 **DoD:** 기법별 채택/기각 사유가 수치와 함께 EXPERIMENTS.md에 있음, E8 vs E9 비교 완료
 
 ## Phase 4. Grounded Answer (1일)
-- [ ] T4.1 `rag/prompts.py` (DESIGN §5.1, 원천 우선순위·citation 형식)
-- [ ] T4.2 `pipeline.py`: retrieve → context → LLM → 인용·숫자 후검증 → 응답
-- [ ] T4.3 위임·별표·범위 밖 질문 처리 확인
-- [ ] T4.4 답변 점검 (@grounding-reviewer)
+- [x] T4.1 `rag/prompts.py` (DESIGN §5.1, 원천 우선순위·citation 형식) (2026-10-08, 근거 블록에 citation·종류 표기, 컨텍스트 6k 토큰 예산 — 확장 청크부터 제외)
+- [x] T4.2 `pipeline.py`: retrieve → context → LLM → 인용·숫자 후검증 → 응답 (2026-10-08, `rag/grounding.py`: 조↔항 인용 허용, 금액은 원 단위 값으로 비교·별표 `(단위: 만원)` 해석. LLM 실호출 확인은 로컬 대기)
+- [ ] T4.3 위임·별표·범위 밖 질문 처리 확인 — 가짜 LLM 단위테스트만 완료(`tests/test_pipeline.py`). 실제 LLM 확인 로컬 대기
+- [ ] T4.4 답변 점검 (@grounding-reviewer) — 로컬 대기(LLM 필요)
 
 **DoD:** delegation·annex·out_of_scope 문항 올바르게 처리, 숫자 불일치 warnings 0
 
@@ -115,6 +115,13 @@
 6. **T3.6~T3.7 E8·E9** `--config E8_sources,E8_sources_k8,E9_delegation` — **발표 하이라이트**: delegation·annex 유형의 `full_recall@ctx`를 E8(5개) / E8_k8(8개, 개수 통제) / E9로 비교
 7. **T3.8 E10** `--config E10_aux,E10_aux_boost` — definition(term gold)·q035(admrul gold)와 노이즈 비교, priority_boost 채택 여부
 8. **T3.9** 위 결과로 `rag/config.py`의 `full` 프리셋 확정(현재 잠정 = E10_aux)
+9. **T4.3** 답변 수동 확인 (LLM 비용 소량, 캐시됨):
+   ```bash
+   uv run python -c "from rag.pipeline import answer; r = answer('국내대리인을 지정하지 않으면 과태료가 얼마인가요?', debug=True); print(r.answer); print(r.warnings); print([s.citation for s in r.sources])"
+   ```
+   위임(q030·q032)·별표(q037·q038)·범위 밖(q041·q044) 각 1~2개. 확인 포인트: 별표 금액이 표와 일치, warnings 0, 범위 밖은 거절 문구 그대로.
+   범위 밖인데 LLM이 거절하지 않으면 `rag/prompts.py` 규칙 7 강화 또는 검색 점수 임계값 도입 검토(E3 결과의 `refusal_top1_scores` 참고)
+10. **T4.4** `@grounding-reviewer` 에이전트로 dev 10문항 점검
 
 ---
 
