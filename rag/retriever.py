@@ -16,7 +16,7 @@ from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
 from rag.query_expansion import get_term_expander, multi_queries
 from rag.reranker import get_cross_encoder, rerank
-from rag.router import parse_article_refs
+from rag.router import parse_article_refs, parse_definition_chunks
 from rag.vectorstore import VECTOR_NAME
 
 
@@ -142,6 +142,14 @@ def _route(
     """질문에 조·별표 번호가 있으면 해당 조 청크를 맨 앞에 고정한다(원천 필터 적용, 총 top_k 유지)."""
     top_score = results[0].score if results else 1.0
     routed = []
+    for cid in parse_definition_chunks(question):
+        payload = get_chunk_store().by_id[cid]
+        if payload["source_type"] not in cfg.sources:
+            continue
+        hit = next((c for c in results if c.chunk_id == cid), None)
+        if hit is None:
+            hit = RetrievedChunk.from_payload(payload, top_score, "router", "router")
+        routed.append(replace(hit, stage_scores={**hit.stage_scores, "router": 1.0}))
     for key in parse_article_refs(question):
         if key.split(":", 1)[0] not in cfg.sources:
             continue

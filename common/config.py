@@ -17,6 +17,8 @@ TEMPERATURE: float | None = (
     None if _temperature.lower() in ("", "none") else float(_temperature)
 )
 MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "1024"))
+LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT") or 90)  # 초. 응답 대기 상한
+LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES") or 3)  # 429·일시 오류 재시도
 
 # 평가용 LLM judge 모델. 비어 있으면 서비스 모델을 그대로 사용
 JUDGE_MODEL = os.getenv("JUDGE_MODEL") or MODEL

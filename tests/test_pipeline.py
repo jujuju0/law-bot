@@ -182,3 +182,48 @@ def test_answer_without_results_refuses_without_llm(fake_retrieval) -> None:
 
     res = pipeline.answer("내일 날씨?", get_preset("E5_router"), chat=chat)
     assert res.answer == REFUSAL and res.grounded and res.sources == []
+
+
+def test_empty_bullets_removed_after_invalid_citation() -> None:
+    answer = "답변입니다. [법 제43조]\n\n근거:\n- [영 제99조]\n- [법 제43조]"
+    r = check_answer(answer, ["법 제43조"], [LAW43.text])
+    assert "- \n" not in r.answer and not any(
+        line.strip() == "-" for line in r.answer.splitlines()
+    )
+    assert "- [법 제43조]" in r.answer
+
+
+def test_abbreviated_citation_inherits_article() -> None:
+    from rag.grounding import split_citation
+
+    assert split_citation("법 제32조 제1항 제2호, 제2항") == [
+        "법 제32조 제1항 제2호",
+        "법 제32조 제2항",
+    ]
+    assert split_citation("법 제31조, 제43조") == ["법 제31조", "법 제43조"]
+
+
+def test_sibling_clause_citation_allowed_for_expanded_chunk() -> None:
+    from rag.grounding import evidence_citations
+
+    text = "① 가 ② 나 ③ 다"
+    assert "영 제25조" in evidence_citations("영 제25조 제4항", text)
+    assert evidence_citations("영 제25조 제4항", "④ 라") == ["영 제25조 제4항"]
+    r = check_answer(
+        "서류를 냅니다. [영 제25조 제1항]",
+        evidence_citations("영 제25조 제4항", text),
+        [text],
+    )
+    assert not r.invalid_citations
+
+
+def test_refusal_drops_citations() -> None:
+    r = check_answer(f"{REFUSAL}\n\n근거:\n- [법 제43조]", ["법 제43조"], [LAW43.text])
+    assert r.refused and r.answer == REFUSAL and r.cited == []
+
+
+def test_large_units_checked() -> None:
+    r = check_answer(
+        "매출 1조원, 100만명 이상. [법 제43조]", ["법 제43조"], [LAW43.text]
+    )
+    assert "1조원" in r.unsupported_numbers and "100만명" in r.unsupported_numbers
