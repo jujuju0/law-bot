@@ -123,13 +123,14 @@
    범위 밖인데 LLM이 거절하지 않으면 `rag/prompts.py` 규칙 7 강화 또는 검색 점수 임계값 도입 검토(E3 결과의 `refusal_top1_scores` 참고)
 10. **T4.4** `@grounding-reviewer` 에이전트로 dev 10문항 점검
 11. **T5.3** `/api-smoke` — `SERVICE_RETRIEVAL_PRESET`(기본 `full`)으로 서버 기동, 유형별 7문항
-13. **T6** test split 최종 평가(`--split test`, 사용자 명시 요청 시만) → `uv run python -m eval.report --chart` 재생성 → README 결과 표 갱신
 12. **T3.9 답변 평가** (크레딧 사용 — 실행 전 사용자 승인):
     - `.env`에 `JUDGE_MODEL` 확정(실험 중 변경 금지 → EXPERIMENTS.md 상단에 기록), `CREDIT_PER_1K_*` 단가 기록
     - `uv run python -m common.usage --summary`로 잔여 확인
     - `uv run python -m eval.evaluate --config <후보> --answer --limit 5`로 실제 토큰 확인 → 후보 3~4개 dev 전체
     - 실행 전 출력되는 "예상 … 크레딧"을 보고 승인. 잔여의 20% 초과면 자동 중단
     - 결과: `eval/results/*_answer.json` (judge 평균, grounded·환각 인용·숫자 불일치·거절 정확도, 유형별)
+13. **T6** test split 최종 평가(`--split test`, 사용자 명시 요청 시만) → `uv run python -m eval.report --chart` 재생성 → README 결과 표 갱신
+14. **T6.1b·T6.3** `uv run python -m common.usage --summary`로 기법별 토큰·크레딧·캐시 절감 정리, Before/After 데모 3개(구조 청킹 / Hybrid / Delegation expansion)를 `/ask` debug 응답으로 캡처
 
 ---
 
