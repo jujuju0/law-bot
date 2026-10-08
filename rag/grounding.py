@@ -9,9 +9,10 @@ from dataclasses import dataclass, field
 from rag.prompts import REFUSAL
 
 CITATION = re.compile(r"\[([^\[\]]+)\]")
-# 금액: "3천만원", "1,000만원", "500 만원", "2억원"
-MONEY = re.compile(r"(\d[\d,]*(?:\.\d+)?)\s*(억|천만|백만|십만|만|천|백)?\s*원")
+# 금액: "3천만원", "1,000만원", "500 만원", "2억원", "1조원"
+MONEY = re.compile(r"(\d[\d,]*(?:\.\d+)?)\s*(조|억|천만|백만|십만|만|천|백)?\s*원")
 MONEY_UNIT = {
+    "조": 10**12,
     "억": 10**8,
     "천만": 10**7,
     "백만": 10**6,
@@ -22,9 +23,9 @@ MONEY_UNIT = {
 }
 # 금액 외 숫자: 기간·비율·인원·횟수 — 정규화 문자열로 대조
 OTHER_NUMBER = re.compile(
-    r"\d[\d,]*(?:\.\d+)?\s*(?:일|개월|년|퍼센트|%|명|시간|배|회|차)"
+    r"\d[\d,]*(?:\.\d+)?\s*(?:일|개월|년|퍼센트|%|만\s*명|명|시간|배|회|차)"
 )
-TABLE_UNIT = re.compile(r"단위\s*:\s*(억|천만|백만|십만|만|천|백)?\s*원")
+TABLE_UNIT = re.compile(r"단위\s*:\s*(조|억|천만|백만|십만|만|천|백)?\s*원")
 BARE_NUMBER = re.compile(r"(?<![\d,.])\d[\d,]*(?![\d,.])")
 _SPACE_COMMA = re.compile(r"[\s,]")
 
@@ -66,6 +67,35 @@ class GroundingReport:
         return self.refused or (bool(self.cited) and not self.unsupported_numbers)
 
 
+_CLAUSE_SUFFIX = re.compile(r"\s제\d+항.*$")
+_CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩"
+_ARTICLE = re.compile(r"^.*?제\d+조(?:의\d+)?")
+_PREFIX = re.compile(r"^(\S+)\s+제\d")
+
+
+def evidence_citations(citation: str, text: str) -> list[str]:
+    """근거 청크가 검증에 인정하는 citation. 항 청크라도 본문에 다른 항이 함께 있으면(small-to-big) 조 단위도 인정."""
+    article = _CLAUSE_SUFFIX.sub("", citation)
+    if article != citation and sum(m in text for m in _CIRCLED) > 1:
+        return [citation, article]
+    return [citation]
+
+
+def split_citation(raw: str) -> list[str]:
+    """ "[법 제32조 제1항, 제2항]"처럼 생략형으로 이어진 인용을 완전한 citation 목록으로 푼다."""
+    out: list[str] = []
+    for part in (p.strip() for p in re.split(r"[,;]", raw)):
+        if not part:
+            continue
+        if out and (prev := out[-1]):
+            if re.match(r"제\d+[항호]", part) and (m := _ARTICLE.match(prev)):
+                part = f"{m[0]} {part}"
+            elif re.match(r"제\d+조", part) and (m := _PREFIX.match(prev)):
+                part = f"{m[1]} {part}"
+        out.append(part)
+    return out
+
+
 def _norm(text: str) -> str:
     return _SPACE_COMMA.sub("", text)
 
@@ -92,12 +122,12 @@ def check_answer(
     """답변을 근거 citation 집합·근거 텍스트(청크별)와 대조한다. 무효 인용은 답변에서 지운다."""
     available = list(dict.fromkeys(citations))
     report = GroundingReport(answer=answer, refused=REFUSAL in answer)
+    if report.refused:  # 거절은 문구만 남기고 인용·숫자 검사를 하지 않는다
+        report.answer = REFUSAL
+        return report
     for m in CITATION.finditer(answer):
-        raw = m[1]
         # "[법 제31조 제2항, 영 제23조]"처럼 한 괄호에 여러 개
-        for part in (p.strip() for p in re.split(r"[,;]", raw)):
-            if not part:
-                continue
+        for part in split_citation(m[1]):
             if match_citation(part, available):
                 if part not in report.cited:
                     report.cited.append(part)
@@ -105,7 +135,10 @@ def check_answer(
                 report.invalid_citations.append(part)
     if report.invalid_citations:
         cleaned = CITATION.sub(lambda m: _keep_valid(m[1], available), answer)
-        report.answer = re.sub(r"[ \t]+([.,])", r"\1", cleaned).strip()
+        cleaned = re.sub(r"[ \t]+([.,])", r"\1", cleaned)
+        # 인용만 있던 불릿이 비면 줄째 제거
+        cleaned = re.sub(r"^[ \t]*[-*•][ \t]*$\n?", "", cleaned, flags=re.MULTILINE)
+        report.answer = cleaned.strip()
     texts = list(evidence)
     amounts = set().union(*(evidence_amounts(t) for t in texts))
     evidence_norm = _norm("\n".join(texts))
@@ -120,6 +153,6 @@ def check_answer(
 
 
 def _keep_valid(raw: str, available: list[str]) -> str:
-    parts = [p.strip() for p in re.split(r"[,;]", raw) if p.strip()]
+    parts = split_citation(raw)
     valid = [p for p in parts if match_citation(p, available)]
     return f"[{', '.join(valid)}]" if valid else ""

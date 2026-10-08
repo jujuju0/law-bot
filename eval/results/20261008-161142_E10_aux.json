@@ -1,0 +1,683 @@
+{
+ "config": {
+  "name": "E10_aux",
+  "collection": "ai_basic_law",
+  "sources": [
+   "law",
+   "decree",
+   "annex",
+   "admrul",
+   "term"
+  ],
+  "top_k": 5,
+  "candidate_k": 20,
+  "use_bm25": true,
+  "rrf_k": 60,
+  "use_rerank": true,
+  "rerank_field": "embed_text",
+  "rerank_max_length": 512,
+  "use_router": true,
+  "use_term_expansion": true,
+  "use_multi_query": false,
+  "n_queries": 3,
+  "small_to_big": true,
+  "use_ref_expansion": true,
+  "use_delegation_expansion": true,
+  "max_expansion": 3,
+  "expansion_seed_k": 3,
+  "priority_boost": 0.0
+ },
+ "split": "dev",
+ "created_at": "2026-10-08T16:11:42+09:00",
+ "summary": {
+  "overall": {
+   "n": 5,
+   "hit@1": 0.8,
+   "hit@3": 0.8,
+   "hit@5": 0.8,
+   "recall@5": 0.8,
+   "full_recall@5": 0.6667,
+   "recall@ctx": 0.8,
+   "full_recall@ctx": 0.6667,
+   "avg_ctx_chunks": 5.8,
+   "n_multi": 3,
+   "mrr": 0.8,
+   "cand_hit": 1.0,
+   "cand_recall": 0.9
+  },
+  "by_type": {
+   "definition": {
+    "n": 4,
+    "hit@1": 0.75,
+    "hit@3": 0.75,
+    "hit@5": 0.75,
+    "recall@5": 0.75,
+    "full_recall@5": 0.6667,
+    "recall@ctx": 0.75,
+    "full_recall@ctx": 0.6667,
+    "avg_ctx_chunks": 5.75,
+    "n_multi": 3,
+    "mrr": 0.75,
+    "cand_hit": 1.0,
+    "cand_recall": 0.875
+   },
+   "article_lookup": {
+    "n": 1,
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "recall@5": 1.0,
+    "full_recall@5": NaN,
+    "recall@ctx": 1.0,
+    "full_recall@ctx": NaN,
+    "avg_ctx_chunks": 6.0,
+    "n_multi": 0,
+    "mrr": 1.0,
+    "cand_hit": 1.0,
+    "cand_recall": 1.0
+   }
+  },
+  "p50_latency_ms": 1058.9,
+  "p50_query_prep_ms": 0.0,
+  "refusal_top1_scores": []
+ },
+ "usage": {
+  "llm_in": 0,
+  "llm_out": 0,
+  "embed": 0,
+  "llm_calls": 0,
+  "cache_hits": 0,
+  "est_credits": 0.0
+ },
+ "questions": [
+  {
+   "id": "q001",
+   "type": "definition",
+   "question": "AI 기본법에서 말하는 생성형 인공지능은 정확히 어떤 시스템을 가리키나요?",
+   "gold": [
+    "law:제2조",
+    "term:생성형 인공지능"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1058.903226046823,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "term:생성형 인공지능",
+     "citation": "법령용어 생성형 인공지능",
+     "source_type": "term",
+     "score": 0.9951,
+     "stage_scores": {
+      "dense": 0.708,
+      "dense_rank": 1,
+      "bm25": 12.6318,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9951,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i5",
+     "citation": "법 제2조 제5호",
+     "source_type": "law",
+     "score": 0.9884,
+     "stage_scores": {
+      "dense": 0.6057,
+      "dense_rank": 3,
+      "bm25": 9.9778,
+      "bm25_rank": 2,
+      "rrf": 0.032,
+      "rerank": 0.9884,
+      "pre_rerank_rank": 2,
+      "merged": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.217,
+     "stage_scores": {
+      "dense": 0.544,
+      "dense_rank": 11,
+      "bm25": 7.0388,
+      "bm25_rank": 3,
+      "rrf": 0.03,
+      "rerank": 0.217,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "term:인공지능",
+     "citation": "법령용어 인공지능",
+     "source_type": "term",
+     "score": 0.0685,
+     "stage_scores": {
+      "dense": 0.6382,
+      "dense_rank": 2,
+      "bm25": 6.1999,
+      "bm25_rank": 7,
+      "rrf": 0.0311,
+      "rerank": 0.0685,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "decree:a23-p2",
+     "citation": "영 제23조 제2항",
+     "source_type": "decree",
+     "score": 0.066,
+     "stage_scores": {
+      "bm25": 5.9542,
+      "bm25_rank": 9,
+      "rrf": 0.0145,
+      "rerank": 0.066,
+      "pre_rerank_rank": 14
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": 2,
+    "term:생성형 인공지능": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 기본법에서 말하는 생성형 인공지능은 정확히 어떤 시스템을 가리키나요?"
+   ],
+   "query_prep_ms": 1.442571054212749
+  },
+  {
+   "id": "q002",
+   "type": "definition",
+   "question": "어떤 분야에서 활용되는 AI가 고영향 인공지능으로 분류되나요?",
+   "gold": [
+    "law:제2조",
+    "term:고영향 인공지능"
+   ],
+   "should_refuse": false,
+   "latency_ms": 716.3912769174203,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "decree:a25-p2",
+     "citation": "영 제25조 제2항",
+     "source_type": "decree",
+     "score": 0.781,
+     "stage_scores": {
+      "dense": 0.4713,
+      "dense_rank": 4,
+      "bm25": 6.511,
+      "bm25_rank": 4,
+      "rrf": 0.0312,
+      "rerank": 0.781,
+      "pre_rerank_rank": 4,
+      "merged": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.5914,
+     "stage_scores": {
+      "dense": 0.4906,
+      "dense_rank": 2,
+      "bm25": 6.0455,
+      "bm25_rank": 6,
+      "rrf": 0.0313,
+      "rerank": 0.5914,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "decree:a23-p4",
+     "citation": "영 제23조 제4항",
+     "source_type": "decree",
+     "score": 0.3141,
+     "stage_scores": {
+      "dense": 0.4712,
+      "dense_rank": 5,
+      "bm25": 4.4382,
+      "bm25_rank": 19,
+      "rrf": 0.028,
+      "rerank": 0.3141,
+      "pre_rerank_rank": 8,
+      "merged": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.2415,
+     "stage_scores": {
+      "dense": 0.4647,
+      "dense_rank": 7,
+      "bm25": 5.8423,
+      "bm25_rank": 9,
+      "rrf": 0.0294,
+      "rerank": 0.2415,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "decree:a28",
+     "citation": "영 제28조",
+     "source_type": "decree",
+     "score": 0.2129,
+     "stage_scores": {
+      "dense": 0.4827,
+      "dense_rank": 3,
+      "bm25": 6.4263,
+      "bm25_rank": 5,
+      "rrf": 0.0313,
+      "rerank": 0.2129,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 6,
+     "chunk_id": "decree:a26",
+     "citation": "영 제26조",
+     "source_type": "decree",
+     "score": 0.1916,
+     "stage_scores": {
+      "delegation": 0.1916
+     },
+     "added_by": "delegation",
+     "via": "law:a33"
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": null,
+    "term:고영향 인공지능": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.5,
+   "queries": [
+    "어떤 분야에서 활용되는 AI가 고영향 인공지능으로 분류되나요?"
+   ],
+   "query_prep_ms": 0.007105059921741486
+  },
+  {
+   "id": "q003",
+   "type": "definition",
+   "question": "인공지능사업자는 법상 어떤 유형으로 나뉘나요?",
+   "gold": [
+    "law:제2조",
+    "term:인공지능사업자"
+   ],
+   "should_refuse": false,
+   "latency_ms": 665.8336661057547,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "term:인공지능사업자",
+     "citation": "법령용어 인공지능사업자",
+     "source_type": "term",
+     "score": 0.9771,
+     "stage_scores": {
+      "dense": 0.6787,
+      "dense_rank": 1,
+      "bm25": 1.9992,
+      "bm25_rank": 4,
+      "rrf": 0.032,
+      "rerank": 0.9771,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i7",
+     "citation": "법 제2조 제7호",
+     "source_type": "law",
+     "score": 0.9232,
+     "stage_scores": {
+      "dense": 0.6526,
+      "dense_rank": 2,
+      "bm25": 1.5254,
+      "bm25_rank": 19,
+      "rrf": 0.0288,
+      "rerank": 0.9232,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "decree:a29",
+     "citation": "영 제29조",
+     "source_type": "decree",
+     "score": 0.6027,
+     "stage_scores": {
+      "bm25": 2.3879,
+      "bm25_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.6027,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.3777,
+     "stage_scores": {
+      "dense": 0.5809,
+      "dense_rank": 12,
+      "bm25": 1.8201,
+      "bm25_rank": 6,
+      "rrf": 0.029,
+      "rerank": 0.3777,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.1854,
+     "stage_scores": {
+      "bm25": 1.7046,
+      "bm25_rank": 10,
+      "rrf": 0.0143,
+      "rerank": 0.1854,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 6,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.1668,
+     "stage_scores": {
+      "delegation": 0.1668
+     },
+     "added_by": "delegation",
+     "via": "decree:a29"
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": 2,
+    "term:인공지능사업자": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "인공지능사업자는 법상 어떤 유형으로 나뉘나요?"
+   ],
+   "query_prep_ms": 0.0056229764595627785
+  },
+  {
+   "id": "q005",
+   "type": "definition",
+   "question": "AI 기본법상 인공지능윤리라는 개념은 어떻게 규정되어 있나요?",
+   "gold": [
+    "law:제2조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1118.3859790908173,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i11",
+     "citation": "법 제2조 제11호",
+     "source_type": "law",
+     "score": 0.942,
+     "stage_scores": {
+      "dense": 0.6126,
+      "dense_rank": 2,
+      "rrf": 0.0161,
+      "rerank": 0.942,
+      "pre_rerank_rank": 10
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a27",
+     "citation": "법 제27조",
+     "source_type": "law",
+     "score": 0.7894,
+     "stage_scores": {
+      "dense": 0.6019,
+      "dense_rank": 6,
+      "bm25": 2.6358,
+      "bm25_rank": 20,
+      "rrf": 0.0277,
+      "rerank": 0.7894,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.5008,
+     "stage_scores": {
+      "dense": 0.6025,
+      "dense_rank": 5,
+      "rrf": 0.0154,
+      "rerank": 0.5008,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a6-p2",
+     "citation": "법 제6조 제2항",
+     "source_type": "law",
+     "score": 0.3744,
+     "stage_scores": {
+      "dense": 0.6097,
+      "dense_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.3744,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.1783,
+     "stage_scores": {
+      "dense": 0.5943,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.1783,
+      "pre_rerank_rank": 15
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 6,
+     "chunk_id": "decree:a21",
+     "citation": "영 제21조",
+     "source_type": "decree",
+     "score": 0.1605,
+     "stage_scores": {
+      "delegation": 0.1605
+     },
+     "added_by": "delegation",
+     "via": "law:a27"
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 기본법상 인공지능윤리라는 개념은 어떻게 규정되어 있나요?"
+   ],
+   "query_prep_ms": 0.006044050678610802
+  },
+  {
+   "id": "q007",
+   "type": "article_lookup",
+   "question": "법 제28조는 무엇에 관한 조문인가요?",
+   "gold": [
+    "law:제28조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1126.8716010963544,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a28",
+     "citation": "법 제28조",
+     "source_type": "law",
+     "score": 0.5284,
+     "stage_scores": {
+      "bm25": 3.316,
+      "bm25_rank": 5,
+      "rrf": 0.0154,
+      "rerank": 0.5284,
+      "pre_rerank_rank": 12,
+      "router": 1.0
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "decree:a28",
+     "citation": "영 제28조",
+     "source_type": "decree",
+     "score": 0.5828,
+     "stage_scores": {
+      "bm25": 3.5827,
+      "bm25_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.5828,
+      "pre_rerank_rank": 10
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.0022,
+     "stage_scores": {
+      "dense": 0.4106,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0022,
+      "pre_rerank_rank": 15
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a6-p2",
+     "citation": "법 제6조 제2항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "bm25": 0.5193,
+      "bm25_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 18
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a8-p1",
+     "citation": "법 제8조 제1항",
+     "source_type": "law",
+     "score": 0.0008,
+     "stage_scores": {
+      "bm25": 0.5558,
+      "bm25_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0008,
+      "pre_rerank_rank": 16
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 6,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.0007,
+     "stage_scores": {
+      "delegation": 0.0007
+     },
+     "added_by": "delegation",
+     "via": "decree:a28"
+    }
+   ],
+   "gold_ranks": {
+    "law:제28조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "법 제28조는 무엇에 관한 조문인가요?"
+   ],
+   "query_prep_ms": 0.005765934474766254
+  }
+ ]
+}

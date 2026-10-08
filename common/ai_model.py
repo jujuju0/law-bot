@@ -4,6 +4,8 @@ from common.config import (
     API_KEY,
     BASE_URL,
     EMBEDDING_MODEL,
+    LLM_MAX_RETRIES,
+    LLM_TIMEOUT,
     MAX_TOKENS,
     MODEL,
     TEMPERATURE,
@@ -29,6 +31,8 @@ def get_llm_model(
         base_url=BASE_URL,
         use_responses_api=False,  # base url로 할 때는 이부분 넣어야 함.(MonoRouter 사용)
         max_tokens=max_tokens,
+        timeout=LLM_TIMEOUT,
+        max_retries=LLM_MAX_RETRIES,
         **kwargs,
     )
 

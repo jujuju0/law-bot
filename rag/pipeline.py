@@ -15,7 +15,7 @@ from common.cache import Message, cached_chat
 from common.config import SERVICE_RETRIEVAL_PRESET
 from common.usage import tracker
 from rag.config import RetrievalConfig, get_preset
-from rag.grounding import check_answer, match_citation
+from rag.grounding import check_answer, evidence_citations, match_citation
 from rag.loader import load_sources
 from rag.prompts import NOTICE, REFUSAL, build_messages, select_context
 from rag.retriever import RetrievalTrace, RetrievedChunk, retrieve_with_trace
@@ -70,7 +70,9 @@ def _sources(chunks: Sequence[RetrievedChunk], cited: list[str]) -> list[Source]
             doc_title=c.doc_title,
             content=c.text,
             score=round(c.score, 4),
-            cited=any(match_citation(x, [c.citation]) for x in cited),
+            cited=any(
+                match_citation(x, evidence_citations(c.citation, c.text)) for x in cited
+            ),
             added_by=c.added_by,
         )
         for c in chunks
@@ -103,7 +105,9 @@ def answer(
     if context:
         raw = chat(build_messages(question, context))
         report = check_answer(
-            raw, [c.citation for c in context], [c.text for c in context]
+            raw,
+            [a for c in context for a in evidence_citations(c.citation, c.text)],
+            [c.text for c in context],
         )
     else:
         raw = REFUSAL

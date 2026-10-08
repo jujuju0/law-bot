@@ -280,3 +280,13 @@ def test_priority_boost_prefers_law_over_term() -> None:
     ]
     no_boost = replace(cfg, priority_boost=0.0)
     assert retriever._priority_boost([term, law], no_boost)[0] is term
+
+
+def test_definition_route_matches_only_definition_questions() -> None:
+    from rag.router import parse_definition_chunks
+
+    assert parse_definition_chunks("고영향 인공지능이란 무엇인가요?") == [
+        "law:a2-i4",
+        "term:고영향 인공지능",
+    ]
+    assert parse_definition_chunks("고영향 인공지능을 쓰면 뭘 해야 하나요?") == []

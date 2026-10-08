@@ -77,7 +77,19 @@ Online   질의 준비(term expansion / multi-query)
 | E1 | 구조 청킹 + dense | 0.586 | 0.655 | 0.690 | 0.629 | 0.586 |
 | E2 | + contextual header | 0.552 | 0.655 | 0.655 | 0.586 | 0.517 |
 | E3 | + BM25 + RRF | 0.483 | 0.621 | 0.690 | 0.563 | 0.603 |
-| E4~E10 | rerank, router, 질의 확장, ref/delegation 확장, 원천 추가 | 구현 완료, 평가 예정 | | | | |
+| E4 | + Rerank (bge-reranker-v2-m3) | 0.759 | 0.828 | 0.828 | 0.787 | 0.603 |
+| E6 | + Term expansion (E5 Router 포함) | 0.793 | 0.862 | 0.897 | 0.836 | 0.621 |
+| E8 | + 원천 추가 (시행령·별표) | 0.862 | 0.931 | 0.966 | 0.898 | 0.897 |
+| E9 | + Delegation expansion | 0.862 | 0.931 | 0.966 | 0.898 | 0.897 |
+| **E10 (서비스 `full`)** | + 보조 원천 (고시·용어) | 0.862 | 0.931 | 0.931 | 0.891 | 0.931 |
+
+조 단위 완전 재현율(Full-Recall@ctx): E4 0.143 → E8 **0.714** → E9 0.809 → E10 **0.905** (결과 개수만 8개로 늘린 대조군 E8_k8은 0.714). 위임 확장은 개수 통제 대조에서 이득이 확인됐지만 test split(11문항)에서는 재현되지 않았다.
+
+**test split 최종 평가** (11문항): E0 Hit@1 0.545 → E10 **1.000**, Full-R@ctx 0.000 → **1.000** ([`ablation_test.md`](eval/results/ablation_test.md)).
+
+**답변 평가** (LLM judge, E10): dev correctness 4.24 · faithfulness 3.38 · 근거 인용 100% · 숫자 불일치 0 · 거절 정확도 1.0 / test correctness 4.27 · 환각 인용 2/12(후처리로 제거).
+
+Before/After 데모 3개: [`docs/DEMO.md`](docs/DEMO.md). 비용 정리: [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md) T6.1b.
 
 ![유형별 Hit@3](eval/results/ablation_by_type.png)
 
@@ -85,6 +97,8 @@ Online   질의 준비(term expansion / multi-query)
 
 ## 한계
 
+- 응답 지연은 CPU rerank·LLM 때문에 질문당 약 11~13초다(검색만 약 0.9초).
+- 제재·참조 질문(예: 미고지 시 제재 → 법 제43조)은 역방향 참조(`referenced_by`)가 없어 실패한다. 정의 비교형 질문(인공지능 vs 인공지능시스템)은 정의 호 검색이 누락될 수 있다.
 - 법령해석례(`expc`)는 `query=인공지능` 결과가 0건(2026-10-08)이라 수집하지 않았다.
 - 골든셋은 45문항(dev 33 / test 12)으로 작아 유형별 수치는 방향만 본다. 튜닝은 dev에서만, test는 최종 1회.
 - Term expansion 사전(`data/term_synonyms.yaml`)은 수작업이다. 일반 표현으로 작성했지만 사전 품질이 성능을 좌우한다.
