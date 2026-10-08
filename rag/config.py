@@ -22,12 +22,19 @@ class RetrievalConfig:
     candidate_k: int = 20  # 단계 간 넘기는 후보 수 (fusion·rerank 대상)
     use_bm25: bool = False  # T3.1: kiwi 형태소 BM25를 dense와 RRF로 결합
     rrf_k: int = 60
+    use_rerank: bool = False  # T3.2: 1단계 후보(candidate_k개)를 CrossEncoder로 재정렬
+    # 재순위화 입력 문서: embed_text | parent_text | text
+    rerank_field: str = "embed_text"
+    rerank_max_length: int = 512
 
 
 E0 = RetrievalConfig(name="E0_naive", collection=NAIVE_COLLECTION_NAME)
 E1 = RetrievalConfig(name="E1_structure", collection=RAW_COLLECTION_NAME)
 E2 = RetrievalConfig(name="E2_header")
 E3 = replace(E2, name="E3_hybrid", use_bm25=True)
+E4 = replace(E3, name="E4_rerank", use_rerank=True)
+# E4 변형: 입력을 조 전체(parent_text)로 — 항·호 청크도 조 문맥으로 판단 (/add-retrieval-technique 메모)
+E4_PARENT = replace(E4, name="E4_rerank_parent", rerank_field="parent_text")
 
 PRESETS: dict[str, RetrievalConfig] = {
     cfg.name: cfg
@@ -36,6 +43,8 @@ PRESETS: dict[str, RetrievalConfig] = {
         E1,
         E2,
         E3,
+        E4,
+        E4_PARENT,
         replace(E2, name="baseline"),
     )
 }

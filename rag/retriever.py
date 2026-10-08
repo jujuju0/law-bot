@@ -13,6 +13,7 @@ from common.qdrant import get_qdrant_client
 from rag.bm25 import get_bm25_index
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
+from rag.reranker import get_cross_encoder, rerank
 from rag.vectorstore import VECTOR_NAME
 
 
@@ -121,13 +122,35 @@ class RetrievalTrace:
     candidates: list[RetrievedChunk]  # 1단계(dense/hybrid) 후보, 최대 candidate_k개
 
 
+def _rerank(
+    question: str, candidates: list[RetrievedChunk], cfg: RetrievalConfig
+) -> list[RetrievedChunk]:
+    scorer = get_cross_encoder(max_length=cfg.rerank_max_length)
+    return rerank(
+        question, candidates, cfg.top_k, field=cfg.rerank_field, scorer=scorer
+    )
+
+
 def retrieve_with_trace(question: str, cfg: RetrievalConfig) -> RetrievalTrace:
-    """질문 → 최종 상위 `cfg.top_k`개 + 1단계 후보. 단계: dense (+ BM25 → RRF)."""
+    """질문 → 최종 상위 `cfg.top_k`개 + 1단계 후보. 단계: dense (+ BM25 → RRF) (+ rerank)."""
     limit = max(cfg.candidate_k, cfg.top_k)
     candidates = _dense(question, cfg, limit)
     if cfg.use_bm25:
         candidates = _rrf([candidates, _bm25(question, cfg, limit)], cfg.rrf_k)[:limit]
-    return RetrievalTrace(results=candidates[: cfg.top_k], candidates=candidates)
+    results = (
+        _rerank(question, candidates, cfg)
+        if cfg.use_rerank
+        else candidates[: cfg.top_k]
+    )
+    return RetrievalTrace(results=results, candidates=candidates)
+
+
+def warmup(cfg: RetrievalConfig) -> None:
+    """설정에 필요한 무거운 객체(BM25 색인, CrossEncoder)를 미리 로딩한다(지연 측정·서비스 기동용)."""
+    if cfg.use_bm25:
+        get_bm25_index()
+    if cfg.use_rerank:
+        get_cross_encoder(max_length=cfg.rerank_max_length)
 
 
 def retrieve(question: str, cfg: RetrievalConfig) -> list[RetrievedChunk]:

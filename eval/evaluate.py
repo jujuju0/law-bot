@@ -22,7 +22,7 @@ from common.config import PROJECT_ROOT
 from eval.configs import get_preset
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
-from rag.retriever import RetrievedChunk, retrieve_with_trace
+from rag.retriever import RetrievedChunk, retrieve_with_trace, warmup
 
 GOLDEN_PATH = PROJECT_ROOT / "eval" / "golden_set.jsonl"
 RESULTS_DIR = PROJECT_ROOT / "eval" / "results"
@@ -231,9 +231,10 @@ def run(cfg: RetrievalConfig, questions: list[dict[str, Any]]) -> list[QuestionR
     """프리셋 하나로 모든 문항을 검색·채점한다.
 
     질의 임베딩은 시작 전에 한 번의 배치로 캐시에 넣는다(게이트웨이 분당 요청 한도 대응).
-    따라서 latency에는 질의 임베딩 API 시간이 포함되지 않는다.
+    따라서 latency에는 질의 임베딩 API 시간이 포함되지 않는다. BM25·CrossEncoder 로딩도 미리 끝낸다.
     """
     get_embedding_cache().embed([q["question"] for q in questions])
+    warmup(cfg)
     results = []
     for q in questions:
         start = time.perf_counter()

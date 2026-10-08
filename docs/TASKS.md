@@ -50,19 +50,19 @@
 **DoD:** 테스트 통과 + 원천별 포인트 수 확인 + chunk-inspector 치명 이슈 0 + 위임 그래프에 법 제33조 → 시행령 연결이 있음(시행령에 해당 조가 있다면)
 
 ## Phase 2. Golden Set + Baseline (1일) ← 기법 개발 전에 확정
-- [ ] T2.1 골든셋 45문항 (@golden-set-builder), 유형 분포는 DESIGN §7.2. 시행령·별표 문항은 실제 수집된 조문 기준
-- [ ] T2.2 직접 검수: gold가 정말 정답인지 원문 대조, dev 33 / test 12
-- [ ] T2.3 `retriever.py` dense + `RetrievalConfig` 골격 (sources 필터 포함)
-- [ ] T2.4 `eval/evaluate.py`: Hit@K, Recall@K, Full-Recall@5, MRR, 유형별 집계, 결과 JSON(+usage), `--limit`, `--answer` 전 예산 가드(DESIGN §9.5)
-- [ ] T2.5 E0~E2 실행·기록 (/run-eval)
+- [x] T2.1 골든셋 45문항 (@golden-set-builder), 유형 분포는 DESIGN §7.2. 시행령·별표 문항은 실제 수집된 조문 기준
+- [x] T2.2 직접 검수: gold가 정말 정답인지 원문 대조, dev 33 / test 12
+- [x] T2.3 `retriever.py` dense + `RetrievalConfig` 골격 (sources 필터 포함)
+- [x] T2.4 `eval/evaluate.py`: Hit@K, Recall@K, Full-Recall@5, MRR, 유형별 집계, 결과 JSON(+usage), `--limit`, `--answer` 전 예산 가드(DESIGN §9.5)
+- [x] T2.5 E0~E2 실행·기록 (/run-eval) (2026-10-08, 커밋 43c55ac 기준으로 체크 갱신)
 - [ ] T2.6 실패 분석 (@retrieval-analyst) → 기법 우선순위 결정
 
 **DoD:** EXPERIMENTS.md에 E0~E2 + 실패 유형 분석
 
 ## Phase 3. Advanced Retrieval (2.5일)
 각 항목은 `/add-retrieval-technique` 절차로 진행
-- [ ] T3.1 BM25(kiwi) + RRF → E3
-- [ ] T3.2 Reranker → E4 (CPU 지연 측정)
+- [x] T3.1 BM25(kiwi) + RRF → E3 (2026-10-08, 채택: Cand-R@20 +0.086)
+- [ ] T3.2 Reranker → E4 (CPU 지연 측정) — 코드·단위테스트 완료(2026-10-08, `rag/reranker.py`, 프리셋 `E4_rerank`·`E4_rerank_parent`). **로컬에서 평가 실행·기록 남음** (클라우드 세션은 API 키·Qdrant·HF 모델 다운로드 불가)
 - [ ] T3.3 Router (법/시행령/별표 번호) → E5
 - [ ] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교)
 - [ ] T3.5 Ref expansion + Small-to-Big → E7

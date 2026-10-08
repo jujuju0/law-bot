@@ -22,6 +22,8 @@ MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "1024"))
 JUDGE_MODEL = os.getenv("JUDGE_MODEL") or MODEL
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+# 로컬 CrossEncoder reranker (sentence-transformers, HuggingFace Hub 모델명 또는 로컬 경로)
+RERANKER_MODEL = os.getenv("RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
 
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "ai_basic_law")

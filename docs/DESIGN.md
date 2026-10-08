@@ -207,7 +207,7 @@ class RetrievalConfig:
 | BM25 | kiwipiepy 형태소 + rank_bm25 (`chunks.jsonl` 기반) | |
 | RRF | `Σ 1/(k+rank)` | |
 | Multi-Query | LLM이 법률 용어로 3개 재작성 | 일상어 질문 |
-| Rerank | CrossEncoder(bge-reranker-v2-m3), 입력 `(질문, embed_text)` | |
+| Rerank | CrossEncoder(`RERANKER_MODEL`, 기본 bge-reranker-v2-m3), 입력 `(질문, rerank_field)` — `embed_text`(E4) / `parent_text`(E4_rerank_parent), `max_length=512`, 1단계 후보 `candidate_k=20`개 재정렬 | `rag/reranker.py`, 후보 재현율은 rerank 전 기준 |
 | Ref expansion | 상위 청크 `refs` (같은 법 내) | 과태료↔의무 |
 | **Delegation expansion** | 상위 청크가 `delegated`면 `delegates_to` 청크 추가, 시행령 청크면 `delegated_from` 법률 조 추가 | "세부 기준은?" 질문 |
 | Small-to-Big | 같은 조 청크 병합, `parent_text` 사용 | |
