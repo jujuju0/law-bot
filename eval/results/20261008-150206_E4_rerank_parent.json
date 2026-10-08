@@ -1,0 +1,3749 @@
+{
+ "config": {
+  "name": "E4_rerank_parent",
+  "collection": "ai_basic_law",
+  "sources": [
+   "law"
+  ],
+  "top_k": 5,
+  "candidate_k": 20,
+  "use_bm25": true,
+  "rrf_k": 60,
+  "use_rerank": true,
+  "rerank_field": "parent_text",
+  "rerank_max_length": 512,
+  "use_router": false,
+  "use_term_expansion": false,
+  "use_multi_query": false,
+  "n_queries": 3,
+  "small_to_big": false,
+  "use_ref_expansion": false,
+  "use_delegation_expansion": false,
+  "max_expansion": 3,
+  "expansion_seed_k": 3,
+  "priority_boost": 0.0
+ },
+ "split": "dev",
+ "created_at": "2026-10-08T15:02:06+09:00",
+ "summary": {
+  "overall": {
+   "n": 29,
+   "hit@1": 0.6552,
+   "hit@3": 0.7586,
+   "hit@5": 0.7586,
+   "recall@5": 0.5,
+   "full_recall@5": 0.1429,
+   "recall@ctx": 0.5,
+   "full_recall@ctx": 0.1429,
+   "avg_ctx_chunks": 5.0,
+   "n_multi": 21,
+   "mrr": 0.7011,
+   "cand_hit": 0.8621,
+   "cand_recall": 0.6034
+  },
+  "by_type": {
+   "definition": {
+    "n": 4,
+    "hit@1": 0.25,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "recall@5": 0.25,
+    "full_recall@5": 0.0,
+    "recall@ctx": 0.25,
+    "full_recall@ctx": 0.0,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 3,
+    "mrr": 0.375,
+    "cand_hit": 1.0,
+    "cand_recall": 0.625
+   },
+   "article_lookup": {
+    "n": 4,
+    "hit@1": 0.5,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "recall@5": 0.5,
+    "full_recall@5": NaN,
+    "recall@ctx": 0.5,
+    "full_recall@ctx": NaN,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 0,
+    "mrr": 0.5,
+    "cand_hit": 0.5,
+    "cand_recall": 0.5
+   },
+   "colloquial": {
+    "n": 6,
+    "hit@1": 0.3333,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "recall@5": 0.25,
+    "full_recall@5": 0.0,
+    "recall@ctx": 0.25,
+    "full_recall@ctx": 0.0,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 5,
+    "mrr": 0.3889,
+    "cand_hit": 0.6667,
+    "cand_recall": 0.4167
+   },
+   "obligation": {
+    "n": 4,
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "recall@5": 0.875,
+    "full_recall@5": 0.5,
+    "recall@ctx": 0.875,
+    "full_recall@ctx": 0.5,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 2,
+    "mrr": 1.0,
+    "cand_hit": 1.0,
+    "cand_recall": 0.875
+   },
+   "cross_ref": {
+    "n": 3,
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "recall@5": 0.8333,
+    "full_recall@5": 0.6667,
+    "recall@ctx": 0.8333,
+    "full_recall@ctx": 0.6667,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 3,
+    "mrr": 1.0,
+    "cand_hit": 1.0,
+    "cand_recall": 1.0
+   },
+   "delegation": {
+    "n": 5,
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "recall@5": 0.5,
+    "full_recall@5": 0.0,
+    "recall@ctx": 0.5,
+    "full_recall@ctx": 0.0,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 5,
+    "mrr": 1.0,
+    "cand_hit": 1.0,
+    "cand_recall": 0.5
+   },
+   "annex": {
+    "n": 3,
+    "hit@1": 0.6667,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "recall@5": 0.5,
+    "full_recall@5": 0.0,
+    "recall@ctx": 0.5,
+    "full_recall@ctx": 0.0,
+    "avg_ctx_chunks": 5.0,
+    "n_multi": 3,
+    "mrr": 0.8333,
+    "cand_hit": 1.0,
+    "cand_recall": 0.5
+   }
+  },
+  "p50_latency_ms": 1162.6,
+  "p50_query_prep_ms": 0.0,
+  "refusal_top1_scores": [
+   0.0032,
+   0.0452,
+   0.0024,
+   0.0001
+  ]
+ },
+ "usage": {
+  "llm_in": 0,
+  "llm_out": 0,
+  "embed": 0,
+  "llm_calls": 0,
+  "cache_hits": 0,
+  "est_credits": 0.0
+ },
+ "questions": [
+  {
+   "id": "q001",
+   "type": "definition",
+   "question": "AI 기본법에서 말하는 생성형 인공지능은 정확히 어떤 시스템을 가리키나요?",
+   "gold": [
+    "law:제2조",
+    "term:생성형 인공지능"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1087.4075680039823,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.2272,
+     "stage_scores": {
+      "dense": 0.544,
+      "dense_rank": 6,
+      "bm25": 7.0388,
+      "bm25_rank": 2,
+      "rrf": 0.0313,
+      "rerank": 0.2272,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i5",
+     "citation": "법 제2조 제5호",
+     "source_type": "law",
+     "score": 0.1686,
+     "stage_scores": {
+      "dense": 0.6057,
+      "dense_rank": 1,
+      "bm25": 9.9778,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.1686,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i2",
+     "citation": "법 제2조 제2호",
+     "source_type": "law",
+     "score": 0.1686,
+     "stage_scores": {
+      "dense": 0.5975,
+      "dense_rank": 2,
+      "bm25": 6.9784,
+      "bm25_rank": 3,
+      "rrf": 0.032,
+      "rerank": 0.1686,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a2-i7",
+     "citation": "법 제2조 제7호",
+     "source_type": "law",
+     "score": 0.1686,
+     "stage_scores": {
+      "dense": 0.5228,
+      "dense_rank": 13,
+      "bm25": 3.5012,
+      "bm25_rank": 9,
+      "rrf": 0.0282,
+      "rerank": 0.1686,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a2-i6",
+     "citation": "법 제2조 제6호",
+     "source_type": "law",
+     "score": 0.1686,
+     "stage_scores": {
+      "dense": 0.5288,
+      "dense_rank": 11,
+      "bm25": 3.1624,
+      "bm25_rank": 15,
+      "rrf": 0.0274,
+      "rerank": 0.1686,
+      "pre_rerank_rank": 8
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": 2,
+    "term:생성형 인공지능": null
+   },
+   "first_hit": 2,
+   "candidate_recall": 0.5,
+   "queries": [
+    "AI 기본법에서 말하는 생성형 인공지능은 정확히 어떤 시스템을 가리키나요?"
+   ],
+   "query_prep_ms": 0.0016249250620603561
+  },
+  {
+   "id": "q002",
+   "type": "definition",
+   "question": "어떤 분야에서 활용되는 AI가 고영향 인공지능으로 분류되나요?",
+   "gold": [
+    "law:제2조",
+    "term:고영향 인공지능"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1087.8733770223334,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i6",
+     "citation": "법 제2조 제6호",
+     "source_type": "law",
+     "score": 0.8712,
+     "stage_scores": {
+      "dense": 0.4078,
+      "dense_rank": 15,
+      "bm25": 2.8413,
+      "bm25_rank": 18,
+      "rrf": 0.0262,
+      "rerank": 0.8712,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i10",
+     "citation": "법 제2조 제10호",
+     "source_type": "law",
+     "score": 0.8712,
+     "stage_scores": {
+      "bm25": 5.0847,
+      "bm25_rank": 6,
+      "rrf": 0.0152,
+      "rerank": 0.8712,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.5105,
+     "stage_scores": {
+      "dense": 0.4906,
+      "dense_rank": 1,
+      "bm25": 6.0455,
+      "bm25_rank": 2,
+      "rrf": 0.0325,
+      "rerank": 0.5105,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.2368,
+     "stage_scores": {
+      "dense": 0.4647,
+      "dense_rank": 2,
+      "bm25": 5.8423,
+      "bm25_rank": 4,
+      "rrf": 0.0318,
+      "rerank": 0.2368,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.1675,
+     "stage_scores": {
+      "dense": 0.4589,
+      "dense_rank": 3,
+      "bm25": 6.7305,
+      "bm25_rank": 1,
+      "rrf": 0.0323,
+      "rerank": 0.1675,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": 1,
+    "term:고영향 인공지능": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "어떤 분야에서 활용되는 AI가 고영향 인공지능으로 분류되나요?"
+   ],
+   "query_prep_ms": 0.0004919711500406265
+  },
+  {
+   "id": "q003",
+   "type": "definition",
+   "question": "인공지능사업자는 법상 어떤 유형으로 나뉘나요?",
+   "gold": [
+    "law:제2조",
+    "term:인공지능사업자"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1137.2542039025575,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.2887,
+     "stage_scores": {
+      "dense": 0.5809,
+      "dense_rank": 4,
+      "bm25": 1.8201,
+      "bm25_rank": 2,
+      "rrf": 0.0318,
+      "rerank": 0.2887,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.1851,
+     "stage_scores": {
+      "dense": 0.5486,
+      "dense_rank": 15,
+      "bm25": 1.7046,
+      "bm25_rank": 4,
+      "rrf": 0.029,
+      "rerank": 0.1851,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.137,
+     "stage_scores": {
+      "dense": 0.5622,
+      "dense_rank": 8,
+      "bm25": 1.6344,
+      "bm25_rank": 7,
+      "rrf": 0.0296,
+      "rerank": 0.137,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a26-p3",
+     "citation": "법 제26조 제3항",
+     "source_type": "law",
+     "score": 0.1244,
+     "stage_scores": {
+      "dense": 0.5545,
+      "dense_rank": 12,
+      "bm25": 1.6856,
+      "bm25_rank": 5,
+      "rrf": 0.0293,
+      "rerank": 0.1244,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p7",
+     "citation": "법 제26조 제7항",
+     "source_type": "law",
+     "score": 0.1244,
+     "stage_scores": {
+      "dense": 0.5817,
+      "dense_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.1244,
+      "pre_rerank_rank": 10
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": null,
+    "term:인공지능사업자": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.5,
+   "queries": [
+    "인공지능사업자는 법상 어떤 유형으로 나뉘나요?"
+   ],
+   "query_prep_ms": 0.0003280583769083023
+  },
+  {
+   "id": "q005",
+   "type": "definition",
+   "question": "AI 기본법상 인공지능윤리라는 개념은 어떻게 규정되어 있나요?",
+   "gold": [
+    "law:제2조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1142.281660111621,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a27",
+     "citation": "법 제27조",
+     "source_type": "law",
+     "score": 0.7239,
+     "stage_scores": {
+      "dense": 0.6019,
+      "dense_rank": 5,
+      "bm25": 2.6358,
+      "bm25_rank": 9,
+      "rrf": 0.0299,
+      "rerank": 0.7239,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a6-p5",
+     "citation": "법 제6조 제5항",
+     "source_type": "law",
+     "score": 0.4587,
+     "stage_scores": {
+      "dense": 0.5644,
+      "dense_rank": 9,
+      "bm25": 2.4293,
+      "bm25_rank": 11,
+      "rrf": 0.0286,
+      "rerank": 0.4587,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a6-p3",
+     "citation": "법 제6조 제3항",
+     "source_type": "law",
+     "score": 0.4587,
+     "stage_scores": {
+      "dense": 0.5416,
+      "dense_rank": 14,
+      "bm25": 1.8436,
+      "bm25_rank": 19,
+      "rrf": 0.0262,
+      "rerank": 0.4587,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a6-p2",
+     "citation": "법 제6조 제2항",
+     "source_type": "law",
+     "score": 0.4587,
+     "stage_scores": {
+      "dense": 0.6097,
+      "dense_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.4587,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.2169,
+     "stage_scores": {
+      "dense": 0.6025,
+      "dense_rank": 4,
+      "bm25": 1.9827,
+      "bm25_rank": 16,
+      "rrf": 0.0288,
+      "rerank": 0.2169,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제2조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 기본법상 인공지능윤리라는 개념은 어떻게 규정되어 있나요?"
+   ],
+   "query_prep_ms": 0.0003370223566889763
+  },
+  {
+   "id": "q007",
+   "type": "article_lookup",
+   "question": "법 제28조는 무엇에 관한 조문인가요?",
+   "gold": [
+    "law:제28조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1141.6162240784615,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a28",
+     "citation": "법 제28조",
+     "source_type": "law",
+     "score": 0.6832,
+     "stage_scores": {
+      "bm25": 3.316,
+      "bm25_rank": 1,
+      "rrf": 0.0164,
+      "rerank": 0.6832,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a27",
+     "citation": "법 제27조",
+     "source_type": "law",
+     "score": 0.0025,
+     "stage_scores": {
+      "bm25": 0.4551,
+      "bm25_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.0025,
+      "pre_rerank_rank": 16
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.002,
+     "stage_scores": {
+      "dense": 0.4106,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.002,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a2-i3",
+     "citation": "법 제2조 제3호",
+     "source_type": "law",
+     "score": 0.002,
+     "stage_scores": {
+      "dense": 0.3935,
+      "dense_rank": 10,
+      "rrf": 0.0143,
+      "rerank": 0.002,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p7",
+     "citation": "법 제26조 제7항",
+     "source_type": "law",
+     "score": 0.0014,
+     "stage_scores": {
+      "bm25": 0.4723,
+      "bm25_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0014,
+      "pre_rerank_rank": 14
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제28조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "법 제28조는 무엇에 관한 조문인가요?"
+   ],
+   "query_prep_ms": 0.00046601053327322006
+  },
+  {
+   "id": "q008",
+   "type": "article_lookup",
+   "question": "시행령 25조 내용 알려줘",
+   "gold": [
+    "decree:제25조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1142.92547700461,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a25",
+     "citation": "법 제25조",
+     "source_type": "law",
+     "score": 0.5736,
+     "stage_scores": {
+      "dense": 0.2294,
+      "dense_rank": 7,
+      "bm25": 3.1922,
+      "bm25_rank": 1,
+      "rrf": 0.0313,
+      "rerank": 0.5736,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:add1",
+     "citation": "법 부칙 <제20676호>",
+     "source_type": "law",
+     "score": 0.0286,
+     "stage_scores": {
+      "dense": 0.3135,
+      "dense_rank": 1,
+      "rrf": 0.0164,
+      "rerank": 0.0286,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:add2",
+     "citation": "법 부칙 <제21065호>",
+     "source_type": "law",
+     "score": 0.0165,
+     "stage_scores": {
+      "dense": 0.2834,
+      "dense_rank": 2,
+      "rrf": 0.0161,
+      "rerank": 0.0165,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a16-p5",
+     "citation": "법 제16조 제5항",
+     "source_type": "law",
+     "score": 0.0081,
+     "stage_scores": {
+      "dense": 0.2019,
+      "dense_rank": 15,
+      "rrf": 0.0133,
+      "rerank": 0.0081,
+      "pre_rerank_rank": 17
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p6",
+     "citation": "법 제26조 제6항",
+     "source_type": "law",
+     "score": 0.0077,
+     "stage_scores": {
+      "dense": 0.2032,
+      "dense_rank": 13,
+      "rrf": 0.0137,
+      "rerank": 0.0077,
+      "pre_rerank_rank": 15
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "decree:제25조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.0,
+   "queries": [
+    "시행령 25조 내용 알려줘"
+   ],
+   "query_prep_ms": 0.0004370231181383133
+  },
+  {
+   "id": "q009",
+   "type": "article_lookup",
+   "question": "인공지능기본법 31조를 요약해 주세요.",
+   "gold": [
+    "law:제31조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1151.8707328941673,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.9031,
+     "stage_scores": {
+      "dense": 0.6524,
+      "dense_rank": 1,
+      "bm25": 4.2115,
+      "bm25_rank": 5,
+      "rrf": 0.0318,
+      "rerank": 0.9031,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a40",
+     "citation": "법 제40조",
+     "source_type": "law",
+     "score": 0.2854,
+     "stage_scores": {
+      "dense": 0.6108,
+      "dense_rank": 2,
+      "bm25": 3.2848,
+      "bm25_rank": 15,
+      "rrf": 0.0295,
+      "rerank": 0.2854,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a1",
+     "citation": "법 제1조",
+     "source_type": "law",
+     "score": 0.1568,
+     "stage_scores": {
+      "bm25": 4.3642,
+      "bm25_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.1568,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.0977,
+     "stage_scores": {
+      "dense": 0.5784,
+      "dense_rank": 9,
+      "bm25": 3.5093,
+      "bm25_rank": 11,
+      "rrf": 0.0286,
+      "rerank": 0.0977,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a2-i9",
+     "citation": "법 제2조 제9호",
+     "source_type": "law",
+     "score": 0.0943,
+     "stage_scores": {
+      "dense": 0.5743,
+      "dense_rank": 15,
+      "bm25": 3.2043,
+      "bm25_rank": 16,
+      "rrf": 0.0265,
+      "rerank": 0.0943,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제31조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "인공지능기본법 31조를 요약해 주세요."
+   ],
+   "query_prep_ms": 0.00026996713131666183
+  },
+  {
+   "id": "q011",
+   "type": "article_lookup",
+   "question": "영 제24조에서 정한 기준을 알려주세요.",
+   "gold": [
+    "decree:제24조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1097.79891197104,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a24",
+     "citation": "법 제24조",
+     "source_type": "law",
+     "score": 0.2242,
+     "stage_scores": {
+      "dense": 0.2754,
+      "dense_rank": 14,
+      "bm25": 3.7543,
+      "bm25_rank": 1,
+      "rrf": 0.0299,
+      "rerank": 0.2242,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.0045,
+     "stage_scores": {
+      "dense": 0.3125,
+      "dense_rank": 6,
+      "bm25": 2.0003,
+      "bm25_rank": 3,
+      "rrf": 0.031,
+      "rerank": 0.0045,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.0042,
+     "stage_scores": {
+      "dense": 0.2933,
+      "dense_rank": 10,
+      "bm25": 1.6956,
+      "bm25_rank": 8,
+      "rrf": 0.029,
+      "rerank": 0.0042,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.0037,
+     "stage_scores": {
+      "bm25": 1.5668,
+      "bm25_rank": 10,
+      "rrf": 0.0143,
+      "rerank": 0.0037,
+      "pre_rerank_rank": 16
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.0031,
+     "stage_scores": {
+      "bm25": 1.7373,
+      "bm25_rank": 6,
+      "rrf": 0.0152,
+      "rerank": 0.0031,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "decree:제24조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.0,
+   "queries": [
+    "영 제24조에서 정한 기준을 알려주세요."
+   ],
+   "query_prep_ms": 0.0004009343683719635
+  },
+  {
+   "id": "q012",
+   "type": "colloquial",
+   "question": "우리 회사 상담 챗봇이 AI로 돌아가는데, 손님한테 미리 AI라고 말해줘야 하나요? 어떤 식으로 알리면 돼요?",
+   "gold": [
+    "law:제31조",
+    "decree:제23조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1102.4625040590763,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a16-p5",
+     "citation": "법 제16조 제5항",
+     "source_type": "law",
+     "score": 0.0005,
+     "stage_scores": {
+      "dense": 0.3356,
+      "dense_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.0005,
+      "pre_rerank_rank": 8
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a16-p4",
+     "citation": "법 제16조 제4항",
+     "source_type": "law",
+     "score": 0.0005,
+     "stage_scores": {
+      "dense": 0.3305,
+      "dense_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.0005,
+      "pre_rerank_rank": 16
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.0005,
+     "stage_scores": {
+      "dense": 0.333,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0005,
+      "pre_rerank_rank": 14
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "dense": 0.3366,
+      "dense_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a2-i5",
+     "citation": "법 제2조 제5호",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "dense": 0.3277,
+      "dense_rank": 11,
+      "bm25": 2.1762,
+      "bm25_rank": 1,
+      "rrf": 0.0305,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제31조": 3,
+    "decree:제23조": null
+   },
+   "first_hit": 3,
+   "candidate_recall": 0.5,
+   "queries": [
+    "우리 회사 상담 챗봇이 AI로 돌아가는데, 손님한테 미리 AI라고 말해줘야 하나요? 어떤 식으로 알리면 돼요?"
+   ],
+   "query_prep_ms": 0.0004450557753443718
+  },
+  {
+   "id": "q013",
+   "type": "colloquial",
+   "question": "저희 앱이 AI로 그림을 만들어 주는데, 결과 이미지에 뭘 표시해야 하나요? 워터마크 같은 걸로 해도 되나요?",
+   "gold": [
+    "law:제31조",
+    "decree:제23조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1153.1253510620445,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.1067,
+     "stage_scores": {
+      "dense": 0.2654,
+      "dense_rank": 8,
+      "bm25": 10.1895,
+      "bm25_rank": 1,
+      "rrf": 0.0311,
+      "rerank": 0.1067,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "bm25": 2.0048,
+      "bm25_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "bm25": 2.7253,
+      "bm25_rank": 5,
+      "rrf": 0.0154,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a16-p5",
+     "citation": "법 제16조 제5항",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "dense": 0.2763,
+      "dense_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a16-p3",
+     "citation": "법 제16조 제3항",
+     "source_type": "law",
+     "score": 0.0002,
+     "stage_scores": {
+      "dense": 0.2595,
+      "dense_rank": 12,
+      "rrf": 0.0139,
+      "rerank": 0.0002,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제31조": 1,
+    "decree:제23조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "저희 앱이 AI로 그림을 만들어 주는데, 결과 이미지에 뭘 표시해야 하나요? 워터마크 같은 걸로 해도 되나요?"
+   ],
+   "query_prep_ms": 0.0002969754859805107
+  },
+  {
+   "id": "q014",
+   "type": "colloquial",
+   "question": "저희는 해외 AI 회사라 한국에 사무실이 없어요. 한국에서 서비스하려면 따로 해야 하는 게 있나요?",
+   "gold": [
+    "law:제36조",
+    "decree:제29조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1163.0238470388576,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.0176,
+     "stage_scores": {
+      "dense": 0.4426,
+      "dense_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.0176,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a22",
+     "citation": "법 제22조",
+     "source_type": "law",
+     "score": 0.0024,
+     "stage_scores": {
+      "dense": 0.4283,
+      "dense_rank": 5,
+      "bm25": 6.8301,
+      "bm25_rank": 7,
+      "rrf": 0.0303,
+      "rerank": 0.0024,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a26-p3",
+     "citation": "법 제26조 제3항",
+     "source_type": "law",
+     "score": 0.0008,
+     "stage_scores": {
+      "dense": 0.4162,
+      "dense_rank": 9,
+      "bm25": 8.7592,
+      "bm25_rank": 1,
+      "rrf": 0.0309,
+      "rerank": 0.0008,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a26-p4",
+     "citation": "법 제26조 제4항",
+     "source_type": "law",
+     "score": 0.0008,
+     "stage_scores": {
+      "dense": 0.4436,
+      "dense_rank": 2,
+      "bm25": 6.651,
+      "bm25_rank": 9,
+      "rrf": 0.0306,
+      "rerank": 0.0008,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p7",
+     "citation": "법 제26조 제7항",
+     "source_type": "law",
+     "score": 0.0008,
+     "stage_scores": {
+      "dense": 0.4193,
+      "dense_rank": 7,
+      "bm25": 7.4801,
+      "bm25_rank": 4,
+      "rrf": 0.0306,
+      "rerank": 0.0008,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제36조": 1,
+    "decree:제29조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "저희는 해외 AI 회사라 한국에 사무실이 없어요. 한국에서 서비스하려면 따로 해야 하는 게 있나요?"
+   ],
+   "query_prep_ms": 0.00018102582544088364
+  },
+  {
+   "id": "q015",
+   "type": "colloquial",
+   "question": "AI 심사 때문에 대출이 거절됐는데, 왜 그렇게 판단했는지 설명해 달라고 할 수 있나요?",
+   "gold": [
+    "law:제3조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1162.5596300000325,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.0123,
+     "stage_scores": {
+      "bm25": 5.8255,
+      "bm25_rank": 1,
+      "rrf": 0.0164,
+      "rerank": 0.0123,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i1",
+     "citation": "법 제2조 제1호",
+     "source_type": "law",
+     "score": 0.0123,
+     "stage_scores": {
+      "bm25": 5.1675,
+      "bm25_rank": 2,
+      "rrf": 0.0161,
+      "rerank": 0.0123,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a7-p7",
+     "citation": "법 제7조 제7항",
+     "source_type": "law",
+     "score": 0.0004,
+     "stage_scores": {
+      "dense": 0.3367,
+      "dense_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.0004,
+      "pre_rerank_rank": 12
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a7-p6",
+     "citation": "법 제7조 제6항",
+     "source_type": "law",
+     "score": 0.0004,
+     "stage_scores": {
+      "dense": 0.3289,
+      "dense_rank": 15,
+      "rrf": 0.0133,
+      "rerank": 0.0004,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a7-p9",
+     "citation": "법 제7조 제9항",
+     "source_type": "law",
+     "score": 0.0004,
+     "stage_scores": {
+      "dense": 0.327,
+      "dense_rank": 16,
+      "rrf": 0.0132,
+      "rerank": 0.0004,
+      "pre_rerank_rank": 20
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제3조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 심사 때문에 대출이 거절됐는데, 왜 그렇게 판단했는지 설명해 달라고 할 수 있나요?"
+   ],
+   "query_prep_ms": 0.00017997808754444122
+  },
+  {
+   "id": "q016",
+   "type": "colloquial",
+   "question": "우리 AI가 위험한 AI에 해당하는지 헷갈리는데 정부에 물어볼 수 있어요? 답은 얼마 만에 와요?",
+   "gold": [
+    "law:제33조",
+    "decree:제25조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1194.6499159093946,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.0101,
+     "stage_scores": {
+      "dense": 0.484,
+      "dense_rank": 4,
+      "bm25": 4.0135,
+      "bm25_rank": 3,
+      "rrf": 0.0315,
+      "rerank": 0.0101,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a12",
+     "citation": "법 제12조",
+     "source_type": "law",
+     "score": 0.0012,
+     "stage_scores": {
+      "dense": 0.4897,
+      "dense_rank": 2,
+      "bm25": 5.3235,
+      "bm25_rank": 1,
+      "rrf": 0.0325,
+      "rerank": 0.0012,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a13-p3",
+     "citation": "법 제13조 제3항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "dense": 0.4992,
+      "dense_rank": 1,
+      "bm25": 2.5469,
+      "bm25_rank": 12,
+      "rrf": 0.0303,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a13-p1",
+     "citation": "법 제13조 제1항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "dense": 0.4873,
+      "dense_rank": 3,
+      "bm25": 2.0924,
+      "bm25_rank": 16,
+      "rrf": 0.029,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a13-p2",
+     "citation": "법 제13조 제2항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "dense": 0.4676,
+      "dense_rank": 5,
+      "bm25": 1.9624,
+      "bm25_rank": 17,
+      "rrf": 0.0284,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제33조": null,
+    "decree:제25조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.0,
+   "queries": [
+    "우리 AI가 위험한 AI에 해당하는지 헷갈리는데 정부에 물어볼 수 있어요? 답은 얼마 만에 와요?"
+   ],
+   "query_prep_ms": 0.0003100140020251274
+  },
+  {
+   "id": "q017",
+   "type": "colloquial",
+   "question": "군대에서 무기 개발용으로만 쓰는 AI도 이 법 지켜야 하나요?",
+   "gold": [
+    "law:제4조",
+    "decree:제2조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1174.5357690379024,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i11",
+     "citation": "법 제2조 제11호",
+     "source_type": "law",
+     "score": 0.0037,
+     "stage_scores": {
+      "bm25": 7.4965,
+      "bm25_rank": 1,
+      "rrf": 0.0164,
+      "rerank": 0.0037,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a20",
+     "citation": "법 제20조",
+     "source_type": "law",
+     "score": 0.0026,
+     "stage_scores": {
+      "dense": 0.4442,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0026,
+      "pre_rerank_rank": 12
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a7-p9",
+     "citation": "법 제7조 제9항",
+     "source_type": "law",
+     "score": 0.0015,
+     "stage_scores": {
+      "dense": 0.4498,
+      "dense_rank": 6,
+      "rrf": 0.0152,
+      "rerank": 0.0015,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a13-p1",
+     "citation": "법 제13조 제1항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "dense": 0.4677,
+      "dense_rank": 1,
+      "bm25": 2.0331,
+      "bm25_rank": 3,
+      "rrf": 0.0323,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a13-p3",
+     "citation": "법 제13조 제3항",
+     "source_type": "law",
+     "score": 0.0009,
+     "stage_scores": {
+      "dense": 0.4674,
+      "dense_rank": 2,
+      "bm25": 1.8772,
+      "bm25_rank": 7,
+      "rrf": 0.0311,
+      "rerank": 0.0009,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제4조": null,
+    "decree:제2조": null
+   },
+   "first_hit": null,
+   "candidate_recall": 0.0,
+   "queries": [
+    "군대에서 무기 개발용으로만 쓰는 AI도 이 법 지켜야 하나요?"
+   ],
+   "query_prep_ms": 0.00018603168427944183
+  },
+  {
+   "id": "q020",
+   "type": "obligation",
+   "question": "고영향 인공지능을 제공하는 사업자가 반드시 이행해야 하는 조치와 그 기록 보관 의무는 무엇인가요?",
+   "gold": [
+    "law:제34조",
+    "decree:제27조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1122.020554030314,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.998,
+     "stage_scores": {
+      "dense": 0.6615,
+      "dense_rank": 1,
+      "bm25": 16.6048,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.998,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.9358,
+     "stage_scores": {
+      "dense": 0.6121,
+      "dense_rank": 4,
+      "bm25": 7.6094,
+      "bm25_rank": 3,
+      "rrf": 0.0315,
+      "rerank": 0.9358,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.8445,
+     "stage_scores": {
+      "dense": 0.651,
+      "dense_rank": 2,
+      "bm25": 7.2354,
+      "bm25_rank": 4,
+      "rrf": 0.0318,
+      "rerank": 0.8445,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.8366,
+     "stage_scores": {
+      "dense": 0.5778,
+      "dense_rank": 6,
+      "bm25": 7.1786,
+      "bm25_rank": 5,
+      "rrf": 0.0305,
+      "rerank": 0.8366,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.6667,
+     "stage_scores": {
+      "dense": 0.6005,
+      "dense_rank": 5,
+      "bm25": 6.7928,
+      "bm25_rank": 6,
+      "rrf": 0.0305,
+      "rerank": 0.6667,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제34조": 1,
+    "decree:제27조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "고영향 인공지능을 제공하는 사업자가 반드시 이행해야 하는 조치와 그 기록 보관 의무는 무엇인가요?"
+   ],
+   "query_prep_ms": 0.00017601996660232544
+  },
+  {
+   "id": "q021",
+   "type": "obligation",
+   "question": "학습 연산량이 기준 이상인 대형 AI 시스템을 가진 사업자에게는 어떤 안전성 의무가 있나요?",
+   "gold": [
+    "law:제32조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1101.22190695256,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.9992,
+     "stage_scores": {
+      "dense": 0.5671,
+      "dense_rank": 1,
+      "bm25": 20.0578,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9992,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.4076,
+     "stage_scores": {
+      "bm25": 5.2163,
+      "bm25_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.4076,
+      "pre_rerank_rank": 12
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a30",
+     "citation": "법 제30조",
+     "source_type": "law",
+     "score": 0.09,
+     "stage_scores": {
+      "dense": 0.4022,
+      "dense_rank": 11,
+      "bm25": 4.5429,
+      "bm25_rank": 6,
+      "rrf": 0.0292,
+      "rerank": 0.09,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.0717,
+     "stage_scores": {
+      "dense": 0.4329,
+      "dense_rank": 3,
+      "bm25": 3.2468,
+      "bm25_rank": 11,
+      "rrf": 0.03,
+      "rerank": 0.0717,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.039,
+     "stage_scores": {
+      "dense": 0.412,
+      "dense_rank": 7,
+      "bm25": 3.1513,
+      "bm25_rank": 12,
+      "rrf": 0.0288,
+      "rerank": 0.039,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제32조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "학습 연산량이 기준 이상인 대형 AI 시스템을 가진 사업자에게는 어떤 안전성 의무가 있나요?"
+   ],
+   "query_prep_ms": 0.0002009328454732895
+  },
+  {
+   "id": "q022",
+   "type": "obligation",
+   "question": "고영향 AI를 이용한 제품을 출시하기 전에 사업자가 사전에 해야 하거나 노력해야 하는 일은 무엇인가요?",
+   "gold": [
+    "law:제33조",
+    "law:제35조",
+    "law:제30조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1151.7452070256695,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.9947,
+     "stage_scores": {
+      "dense": 0.538,
+      "dense_rank": 1,
+      "bm25": 16.9748,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9947,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.9547,
+     "stage_scores": {
+      "dense": 0.5102,
+      "dense_rank": 2,
+      "bm25": 10.1242,
+      "bm25_rank": 4,
+      "rrf": 0.0318,
+      "rerank": 0.9547,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.9535,
+     "stage_scores": {
+      "dense": 0.4498,
+      "dense_rank": 5,
+      "bm25": 10.6306,
+      "bm25_rank": 3,
+      "rrf": 0.0313,
+      "rerank": 0.9535,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a30",
+     "citation": "법 제30조",
+     "source_type": "law",
+     "score": 0.897,
+     "stage_scores": {
+      "dense": 0.4543,
+      "dense_rank": 4,
+      "bm25": 11.2559,
+      "bm25_rank": 2,
+      "rrf": 0.0318,
+      "rerank": 0.897,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.866,
+     "stage_scores": {
+      "dense": 0.462,
+      "dense_rank": 3,
+      "bm25": 8.084,
+      "bm25_rank": 5,
+      "rrf": 0.0313,
+      "rerank": 0.866,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제33조": 2,
+    "law:제35조": 1,
+    "law:제30조": 4
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "고영향 AI를 이용한 제품을 출시하기 전에 사업자가 사전에 해야 하거나 노력해야 하는 일은 무엇인가요?"
+   ],
+   "query_prep_ms": 0.00021606683731079102
+  },
+  {
+   "id": "q023",
+   "type": "obligation",
+   "question": "AI 신뢰 기반 조성을 위해 정부가 마련해야 하는 시책에는 어떤 것들이 있나요?",
+   "gold": [
+    "law:제29조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1178.5467129666358,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.9996,
+     "stage_scores": {
+      "dense": 0.5376,
+      "dense_rank": 1,
+      "bm25": 10.8878,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9996,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a20",
+     "citation": "법 제20조",
+     "source_type": "law",
+     "score": 0.9843,
+     "stage_scores": {
+      "dense": 0.4181,
+      "dense_rank": 15,
+      "bm25": 4.9128,
+      "bm25_rank": 8,
+      "rrf": 0.028,
+      "rerank": 0.9843,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.693,
+     "stage_scores": {
+      "dense": 0.43,
+      "dense_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.693,
+      "pre_rerank_rank": 20
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a25",
+     "citation": "법 제25조",
+     "source_type": "law",
+     "score": 0.3288,
+     "stage_scores": {
+      "bm25": 7.057,
+      "bm25_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.3288,
+      "pre_rerank_rank": 13
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a6-p6",
+     "citation": "법 제6조 제6항",
+     "source_type": "law",
+     "score": 0.3267,
+     "stage_scores": {
+      "dense": 0.4647,
+      "dense_rank": 2,
+      "rrf": 0.0161,
+      "rerank": 0.3267,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제29조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 신뢰 기반 조성을 위해 정부가 마련해야 하는 시책에는 어떤 것들이 있나요?"
+   ],
+   "query_prep_ms": 0.000100000761449337
+  },
+  {
+   "id": "q026",
+   "type": "cross_ref",
+   "question": "누적 연산량 기준 이상 AI를 운영하는 회사가 위험관리체계를 갖추지 않으면 정부는 어떤 조치를 할 수 있나요?",
+   "gold": [
+    "law:제32조",
+    "law:제40조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1193.782426067628,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.8837,
+     "stage_scores": {
+      "dense": 0.5269,
+      "dense_rank": 1,
+      "bm25": 22.9769,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.8837,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.13,
+     "stage_scores": {
+      "dense": 0.4154,
+      "dense_rank": 20,
+      "bm25": 9.5461,
+      "bm25_rank": 2,
+      "rrf": 0.0286,
+      "rerank": 0.13,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.0731,
+     "stage_scores": {
+      "dense": 0.4555,
+      "dense_rank": 5,
+      "bm25": 4.0135,
+      "bm25_rank": 15,
+      "rrf": 0.0287,
+      "rerank": 0.0731,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a12",
+     "citation": "법 제12조",
+     "source_type": "law",
+     "score": 0.0191,
+     "stage_scores": {
+      "dense": 0.4391,
+      "dense_rank": 10,
+      "bm25": 8.7919,
+      "bm25_rank": 3,
+      "rrf": 0.0302,
+      "rerank": 0.0191,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a13-p3",
+     "citation": "법 제13조 제3항",
+     "source_type": "law",
+     "score": 0.0183,
+     "stage_scores": {
+      "dense": 0.4571,
+      "dense_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.0183,
+      "pre_rerank_rank": 12
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제32조": 1,
+    "law:제40조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "누적 연산량 기준 이상 AI를 운영하는 회사가 위험관리체계를 갖추지 않으면 정부는 어떤 조치를 할 수 있나요?"
+   ],
+   "query_prep_ms": 0.00037602148950099945
+  },
+  {
+   "id": "q027",
+   "type": "cross_ref",
+   "question": "AI 관련 실태조사나 통계 작성은 누가 하고, 그 업무를 다른 기관에 맡길 수 있나요?",
+   "gold": [
+    "law:제38조",
+    "law:제39조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1170.0495950644836,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a38",
+     "citation": "법 제38조",
+     "source_type": "law",
+     "score": 0.9792,
+     "stage_scores": {
+      "dense": 0.5281,
+      "dense_rank": 1,
+      "bm25": 24.4194,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9792,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a39",
+     "citation": "법 제39조",
+     "source_type": "law",
+     "score": 0.8456,
+     "stage_scores": {
+      "dense": 0.4391,
+      "dense_rank": 4,
+      "bm25": 12.5246,
+      "bm25_rank": 2,
+      "rrf": 0.0318,
+      "rerank": 0.8456,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a40",
+     "citation": "법 제40조",
+     "source_type": "law",
+     "score": 0.0796,
+     "stage_scores": {
+      "dense": 0.4649,
+      "dense_rank": 2,
+      "bm25": 5.4252,
+      "bm25_rank": 6,
+      "rrf": 0.0313,
+      "rerank": 0.0796,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a11",
+     "citation": "법 제11조",
+     "source_type": "law",
+     "score": 0.0565,
+     "stage_scores": {
+      "dense": 0.3894,
+      "dense_rank": 15,
+      "bm25": 6.6933,
+      "bm25_rank": 5,
+      "rrf": 0.0287,
+      "rerank": 0.0565,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p3",
+     "citation": "법 제26조 제3항",
+     "source_type": "law",
+     "score": 0.0529,
+     "stage_scores": {
+      "bm25": 8.5435,
+      "bm25_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.0529,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제38조": 1,
+    "law:제39조": 2
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "AI 관련 실태조사나 통계 작성은 누가 하고, 그 업무를 다른 기관에 맡길 수 있나요?"
+   ],
+   "query_prep_ms": 0.00024796463549137115
+  },
+  {
+   "id": "q028",
+   "type": "cross_ref",
+   "question": "중소기업이 고영향 AI 안전 조치를 하거나 영향평가를 할 때 정부 지원을 받을 수 있나요?",
+   "gold": [
+    "law:제17조",
+    "law:제34조",
+    "law:제35조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1179.2515369597822,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a17",
+     "citation": "법 제17조",
+     "source_type": "law",
+     "score": 0.9939,
+     "stage_scores": {
+      "dense": 0.5117,
+      "dense_rank": 5,
+      "bm25": 14.0606,
+      "bm25_rank": 1,
+      "rrf": 0.0318,
+      "rerank": 0.9939,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a30",
+     "citation": "법 제30조",
+     "source_type": "law",
+     "score": 0.9584,
+     "stage_scores": {
+      "dense": 0.5347,
+      "dense_rank": 2,
+      "bm25": 6.3927,
+      "bm25_rank": 6,
+      "rrf": 0.0313,
+      "rerank": 0.9584,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.6784,
+     "stage_scores": {
+      "dense": 0.5949,
+      "dense_rank": 1,
+      "bm25": 11.6201,
+      "bm25_rank": 2,
+      "rrf": 0.0325,
+      "rerank": 0.6784,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.3798,
+     "stage_scores": {
+      "dense": 0.4932,
+      "dense_rank": 6,
+      "bm25": 8.7354,
+      "bm25_rank": 3,
+      "rrf": 0.031,
+      "rerank": 0.3798,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a16-p2",
+     "citation": "법 제16조 제2항",
+     "source_type": "law",
+     "score": 0.2557,
+     "stage_scores": {
+      "dense": 0.4743,
+      "dense_rank": 9,
+      "bm25": 6.2649,
+      "bm25_rank": 7,
+      "rrf": 0.0294,
+      "rerank": 0.2557,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제17조": 1,
+    "law:제34조": 4,
+    "law:제35조": 3
+   },
+   "first_hit": 1,
+   "candidate_recall": 1.0,
+   "queries": [
+    "중소기업이 고영향 AI 안전 조치를 하거나 영향평가를 할 때 정부 지원을 받을 수 있나요?"
+   ],
+   "query_prep_ms": 0.0002980232238769531
+  },
+  {
+   "id": "q030",
+   "type": "delegation",
+   "question": "고영향 인공지능 해당 여부 확인을 요청할 때 어떤 서류를 내야 하고, 결과에 이의가 있으면 언제까지 다시 요청할 수 있나요?",
+   "gold": [
+    "law:제33조",
+    "decree:제25조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1133.643836947158,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.962,
+     "stage_scores": {
+      "dense": 0.6099,
+      "dense_rank": 1,
+      "bm25": 20.5395,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.962,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.7207,
+     "stage_scores": {
+      "dense": 0.4444,
+      "dense_rank": 10,
+      "bm25": 14.3563,
+      "bm25_rank": 2,
+      "rrf": 0.0304,
+      "rerank": 0.7207,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.4065,
+     "stage_scores": {
+      "dense": 0.4869,
+      "dense_rank": 4,
+      "bm25": 9.7171,
+      "bm25_rank": 3,
+      "rrf": 0.0315,
+      "rerank": 0.4065,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.2418,
+     "stage_scores": {
+      "dense": 0.4947,
+      "dense_rank": 3,
+      "bm25": 4.864,
+      "bm25_rank": 12,
+      "rrf": 0.0298,
+      "rerank": 0.2418,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.0906,
+     "stage_scores": {
+      "dense": 0.4808,
+      "dense_rank": 5,
+      "bm25": 5.8423,
+      "bm25_rank": 6,
+      "rrf": 0.0305,
+      "rerank": 0.0906,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제33조": 1,
+    "decree:제25조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "고영향 인공지능 해당 여부 확인을 요청할 때 어떤 서류를 내야 하고, 결과에 이의가 있으면 언제까지 다시 요청할 수 있나요?"
+   ],
+   "query_prep_ms": 0.0002689193934202194
+  },
+  {
+   "id": "q031",
+   "type": "delegation",
+   "question": "고영향 인공지능 영향평가에는 구체적으로 어떤 항목이 들어가야 하나요?",
+   "gold": [
+    "law:제35조",
+    "decree:제28조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1132.1972279110923,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.9917,
+     "stage_scores": {
+      "dense": 0.6635,
+      "dense_rank": 1,
+      "bm25": 17.1444,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9917,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.1901,
+     "stage_scores": {
+      "dense": 0.526,
+      "dense_rank": 5,
+      "bm25": 8.0514,
+      "bm25_rank": 2,
+      "rrf": 0.0315,
+      "rerank": 0.1901,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.1386,
+     "stage_scores": {
+      "dense": 0.5654,
+      "dense_rank": 2,
+      "bm25": 6.0455,
+      "bm25_rank": 3,
+      "rrf": 0.032,
+      "rerank": 0.1386,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a30",
+     "citation": "법 제30조",
+     "source_type": "law",
+     "score": 0.0588,
+     "stage_scores": {
+      "dense": 0.5309,
+      "dense_rank": 3,
+      "bm25": 4.5426,
+      "bm25_rank": 6,
+      "rrf": 0.031,
+      "rerank": 0.0588,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a8-p1",
+     "citation": "법 제8조 제1항",
+     "source_type": "law",
+     "score": 0.0487,
+     "stage_scores": {
+      "dense": 0.5121,
+      "dense_rank": 6,
+      "bm25": 3.6223,
+      "bm25_rank": 8,
+      "rrf": 0.0299,
+      "rerank": 0.0487,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제35조": 1,
+    "decree:제28조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "고영향 인공지능 영향평가에는 구체적으로 어떤 항목이 들어가야 하나요?"
+   ],
+   "query_prep_ms": 0.0001919688656926155
+  },
+  {
+   "id": "q032",
+   "type": "delegation",
+   "question": "국내대리인을 지정해야 하는 해외 사업자의 매출액·이용자 수 기준은 구체적으로 얼마인가요?",
+   "gold": [
+    "law:제36조",
+    "decree:제29조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1209.1506469296291,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.7165,
+     "stage_scores": {
+      "dense": 0.5206,
+      "dense_rank": 1,
+      "bm25": 21.5862,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.7165,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a43",
+     "citation": "법 제43조",
+     "source_type": "law",
+     "score": 0.001,
+     "stage_scores": {
+      "dense": 0.3463,
+      "dense_rank": 12,
+      "bm25": 6.6756,
+      "bm25_rank": 5,
+      "rrf": 0.0293,
+      "rerank": 0.001,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a4",
+     "citation": "법 제4조",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.4184,
+      "dense_rank": 2,
+      "bm25": 3.74,
+      "bm25_rank": 10,
+      "rrf": 0.0304,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a26-p3",
+     "citation": "법 제26조 제3항",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "bm25": 3.615,
+      "bm25_rank": 12,
+      "rrf": 0.0139,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a22",
+     "citation": "법 제22조",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.3632,
+      "dense_rank": 8,
+      "bm25": 6.8301,
+      "bm25_rank": 3,
+      "rrf": 0.0306,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제36조": 1,
+    "decree:제29조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "국내대리인을 지정해야 하는 해외 사업자의 매출액·이용자 수 기준은 구체적으로 얼마인가요?"
+   ],
+   "query_prep_ms": 0.00039103906601667404
+  },
+  {
+   "id": "q033",
+   "type": "delegation",
+   "question": "안전성 확보 의무가 적용되는 '누적 연산량 기준'은 시행령에서 구체적으로 얼마로 정했나요?",
+   "gold": [
+    "law:제32조",
+    "decree:제24조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1201.717062969692,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.6571,
+     "stage_scores": {
+      "dense": 0.4879,
+      "dense_rank": 1,
+      "bm25": 25.0602,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.6571,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.0025,
+     "stage_scores": {
+      "dense": 0.3186,
+      "dense_rank": 5,
+      "bm25": 5.0333,
+      "bm25_rank": 9,
+      "rrf": 0.0299,
+      "rerank": 0.0025,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.0017,
+     "stage_scores": {
+      "dense": 0.2932,
+      "dense_rank": 16,
+      "bm25": 8.7326,
+      "bm25_rank": 2,
+      "rrf": 0.0293,
+      "rerank": 0.0017,
+      "pre_rerank_rank": 8
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.0014,
+     "stage_scores": {
+      "dense": 0.311,
+      "dense_rank": 9,
+      "bm25": 5.716,
+      "bm25_rank": 6,
+      "rrf": 0.0296,
+      "rerank": 0.0014,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a6-p7",
+     "citation": "법 제6조 제7항",
+     "source_type": "law",
+     "score": 0.0008,
+     "stage_scores": {
+      "dense": 0.3018,
+      "dense_rank": 13,
+      "rrf": 0.0137,
+      "rerank": 0.0008,
+      "pre_rerank_rank": 18
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제32조": 1,
+    "decree:제24조": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "안전성 확보 의무가 적용되는 '누적 연산량 기준'은 시행령에서 구체적으로 얼마로 정했나요?"
+   ],
+   "query_prep_ms": 0.00028102658689022064
+  },
+  {
+   "id": "q034",
+   "type": "delegation",
+   "question": "정책 수립 과정에 참여를 보장해야 하는 인공지능취약계층에는 구체적으로 누가 포함되나요?",
+   "gold": [
+    "law:제3조",
+    "decree:제1조의2"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1179.172461037524,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a3",
+     "citation": "법 제3조",
+     "source_type": "law",
+     "score": 0.9898,
+     "stage_scores": {
+      "dense": 0.6018,
+      "dense_rank": 1,
+      "bm25": 17.807,
+      "bm25_rank": 1,
+      "rrf": 0.0328,
+      "rerank": 0.9898,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a6-p2",
+     "citation": "법 제6조 제2항",
+     "source_type": "law",
+     "score": 0.2081,
+     "stage_scores": {
+      "dense": 0.5886,
+      "dense_rank": 3,
+      "bm25": 9.4307,
+      "bm25_rank": 2,
+      "rrf": 0.032,
+      "rerank": 0.2081,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a6-p6",
+     "citation": "법 제6조 제6항",
+     "source_type": "law",
+     "score": 0.2081,
+     "stage_scores": {
+      "dense": 0.5656,
+      "dense_rank": 5,
+      "bm25": 7.6628,
+      "bm25_rank": 3,
+      "rrf": 0.0313,
+      "rerank": 0.2081,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a6-p7",
+     "citation": "법 제6조 제7항",
+     "source_type": "law",
+     "score": 0.2081,
+     "stage_scores": {
+      "dense": 0.5676,
+      "dense_rank": 4,
+      "bm25": 3.7104,
+      "bm25_rank": 11,
+      "rrf": 0.0297,
+      "rerank": 0.2081,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a6-p5",
+     "citation": "법 제6조 제5항",
+     "source_type": "law",
+     "score": 0.2081,
+     "stage_scores": {
+      "dense": 0.6015,
+      "dense_rank": 2,
+      "bm25": 2.7371,
+      "bm25_rank": 18,
+      "rrf": 0.0289,
+      "rerank": 0.2081,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "law:제3조": 1,
+    "decree:제1조의2": null
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "정책 수립 과정에 참여를 보장해야 하는 인공지능취약계층에는 구체적으로 누가 포함되나요?"
+   ],
+   "query_prep_ms": 0.000208965502679348
+  },
+  {
+   "id": "q037",
+   "type": "annex",
+   "question": "생성형 AI 서비스라는 사실을 미리 고지하지 않으면 과태료가 1차, 2차, 3차 위반 때 각각 얼마인가요?",
+   "gold": [
+    "annex:별표2",
+    "law:제43조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1213.0297019612044,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.5849,
+     "stage_scores": {
+      "dense": 0.3713,
+      "dense_rank": 2,
+      "bm25": 21.6625,
+      "bm25_rank": 1,
+      "rrf": 0.0325,
+      "rerank": 0.5849,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a43",
+     "citation": "법 제43조",
+     "source_type": "law",
+     "score": 0.0356,
+     "stage_scores": {
+      "bm25": 18.4187,
+      "bm25_rank": 2,
+      "rrf": 0.0161,
+      "rerank": 0.0356,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a6-p3",
+     "citation": "법 제6조 제3항",
+     "source_type": "law",
+     "score": 0.0018,
+     "stage_scores": {
+      "bm25": 5.6375,
+      "bm25_rank": 11,
+      "rrf": 0.0141,
+      "rerank": 0.0018,
+      "pre_rerank_rank": 18
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a2-i5",
+     "citation": "법 제2조 제5호",
+     "source_type": "law",
+     "score": 0.0014,
+     "stage_scores": {
+      "dense": 0.4085,
+      "dense_rank": 1,
+      "bm25": 7.6654,
+      "bm25_rank": 5,
+      "rrf": 0.0318,
+      "rerank": 0.0014,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a2-i6",
+     "citation": "법 제2조 제6호",
+     "source_type": "law",
+     "score": 0.0014,
+     "stage_scores": {
+      "dense": 0.3387,
+      "dense_rank": 16,
+      "bm25": 5.6481,
+      "bm25_rank": 10,
+      "rrf": 0.0274,
+      "rerank": 0.0014,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "annex:별표2": null,
+    "law:제43조": 2
+   },
+   "first_hit": 2,
+   "candidate_recall": 0.5,
+   "queries": [
+    "생성형 AI 서비스라는 사실을 미리 고지하지 않으면 과태료가 1차, 2차, 3차 위반 때 각각 얼마인가요?"
+   ],
+   "query_prep_ms": 0.00018207356333732605
+  },
+  {
+   "id": "q038",
+   "type": "annex",
+   "question": "국내대리인을 지정하지 않은 해외 AI 사업자에게 부과되는 과태료 금액은?",
+   "gold": [
+    "annex:별표2",
+    "law:제43조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1188.533618929796,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a43",
+     "citation": "법 제43조",
+     "source_type": "law",
+     "score": 0.4497,
+     "stage_scores": {
+      "dense": 0.4389,
+      "dense_rank": 3,
+      "bm25": 17.8457,
+      "bm25_rank": 1,
+      "rrf": 0.0323,
+      "rerank": 0.4497,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.3589,
+     "stage_scores": {
+      "dense": 0.4993,
+      "dense_rank": 1,
+      "bm25": 10.2454,
+      "bm25_rank": 2,
+      "rrf": 0.0325,
+      "rerank": 0.3589,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i7",
+     "citation": "법 제2조 제7호",
+     "source_type": "law",
+     "score": 0.0013,
+     "stage_scores": {
+      "bm25": 5.185,
+      "bm25_rank": 5,
+      "rrf": 0.0154,
+      "rerank": 0.0013,
+      "pre_rerank_rank": 8
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a26-p3",
+     "citation": "법 제26조 제3항",
+     "source_type": "law",
+     "score": 0.0012,
+     "stage_scores": {
+      "bm25": 3.615,
+      "bm25_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0012,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a26-p4",
+     "citation": "법 제26조 제4항",
+     "source_type": "law",
+     "score": 0.0012,
+     "stage_scores": {
+      "dense": 0.4247,
+      "dense_rank": 8,
+      "rrf": 0.0147,
+      "rerank": 0.0012,
+      "pre_rerank_rank": 12
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "annex:별표2": null,
+    "law:제43조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "국내대리인을 지정하지 않은 해외 AI 사업자에게 부과되는 과태료 금액은?"
+   ],
+   "query_prep_ms": 0.00026996713131666183
+  },
+  {
+   "id": "q040",
+   "type": "annex",
+   "question": "자율주행자동차 성능인증을 받은 경우 고영향 AI 사업자 책무 중 어떤 조치를 이행한 것으로 인정받나요?",
+   "gold": [
+    "annex:별표1",
+    "law:제34조"
+   ],
+   "should_refuse": false,
+   "latency_ms": 1219.1149920690805,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.9698,
+     "stage_scores": {
+      "dense": 0.5083,
+      "dense_rank": 3,
+      "bm25": 13.299,
+      "bm25_rank": 1,
+      "rrf": 0.0323,
+      "rerank": 0.9698,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a36",
+     "citation": "법 제36조",
+     "source_type": "law",
+     "score": 0.1188,
+     "stage_scores": {
+      "dense": 0.4071,
+      "dense_rank": 7,
+      "bm25": 5.9235,
+      "bm25_rank": 2,
+      "rrf": 0.0311,
+      "rerank": 0.1188,
+      "pre_rerank_rank": 4
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a30",
+     "citation": "법 제30조",
+     "source_type": "law",
+     "score": 0.0613,
+     "stage_scores": {
+      "dense": 0.5213,
+      "dense_rank": 1,
+      "bm25": 5.7173,
+      "bm25_rank": 3,
+      "rrf": 0.0323,
+      "rerank": 0.0613,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a33",
+     "citation": "법 제33조",
+     "source_type": "law",
+     "score": 0.0431,
+     "stage_scores": {
+      "dense": 0.5198,
+      "dense_rank": 2,
+      "bm25": 4.5667,
+      "bm25_rank": 5,
+      "rrf": 0.0315,
+      "rerank": 0.0431,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a35",
+     "citation": "법 제35조",
+     "source_type": "law",
+     "score": 0.0228,
+     "stage_scores": {
+      "dense": 0.4621,
+      "dense_rank": 4,
+      "bm25": 4.514,
+      "bm25_rank": 6,
+      "rrf": 0.0308,
+      "rerank": 0.0228,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {
+    "annex:별표1": null,
+    "law:제34조": 1
+   },
+   "first_hit": 1,
+   "candidate_recall": 0.5,
+   "queries": [
+    "자율주행자동차 성능인증을 받은 경우 고영향 AI 사업자 책무 중 어떤 조치를 이행한 것으로 인정받나요?"
+   ],
+   "query_prep_ms": 0.0002550659701228142
+  },
+  {
+   "id": "q041",
+   "type": "out_of_scope",
+   "question": "AI 서비스에서 개인정보가 유출되면 개인정보보호법상 과징금은 매출액의 몇 퍼센트까지 부과되나요?",
+   "gold": [],
+   "should_refuse": true,
+   "latency_ms": 1214.8271689657122,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i7",
+     "citation": "법 제2조 제7호",
+     "source_type": "law",
+     "score": 0.0032,
+     "stage_scores": {
+      "dense": 0.3536,
+      "dense_rank": 15,
+      "bm25": 7.4552,
+      "bm25_rank": 2,
+      "rrf": 0.0295,
+      "rerank": 0.0032,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.0032,
+     "stage_scores": {
+      "dense": 0.3486,
+      "dense_rank": 18,
+      "bm25": 8.8087,
+      "bm25_rank": 1,
+      "rrf": 0.0292,
+      "rerank": 0.0032,
+      "pre_rerank_rank": 5
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i9",
+     "citation": "법 제2조 제9호",
+     "source_type": "law",
+     "score": 0.0032,
+     "stage_scores": {
+      "dense": 0.3744,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0032,
+      "pre_rerank_rank": 15
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a16-p4",
+     "citation": "법 제16조 제4항",
+     "source_type": "law",
+     "score": 0.0025,
+     "stage_scores": {
+      "dense": 0.3638,
+      "dense_rank": 10,
+      "rrf": 0.0143,
+      "rerank": 0.0025,
+      "pre_rerank_rank": 19
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a13-p2",
+     "citation": "법 제13조 제2항",
+     "source_type": "law",
+     "score": 0.0022,
+     "stage_scores": {
+      "dense": 0.3589,
+      "dense_rank": 12,
+      "bm25": 1.4883,
+      "bm25_rank": 16,
+      "rrf": 0.027,
+      "rerank": 0.0022,
+      "pre_rerank_rank": 11
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {},
+   "first_hit": null,
+   "candidate_recall": null,
+   "queries": [
+    "AI 서비스에서 개인정보가 유출되면 개인정보보호법상 과징금은 매출액의 몇 퍼센트까지 부과되나요?"
+   ],
+   "query_prep_ms": 0.00010302755981683731
+  },
+  {
+   "id": "q042",
+   "type": "out_of_scope",
+   "question": "생성형 AI로 만든 그림의 저작권은 누구에게 있나요?",
+   "gold": [],
+   "should_refuse": true,
+   "latency_ms": 1123.269660049118,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a31",
+     "citation": "법 제31조",
+     "source_type": "law",
+     "score": 0.0452,
+     "stage_scores": {
+      "dense": 0.3061,
+      "dense_rank": 11,
+      "bm25": 5.1676,
+      "bm25_rank": 2,
+      "rrf": 0.0302,
+      "rerank": 0.0452,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i5",
+     "citation": "법 제2조 제5호",
+     "source_type": "law",
+     "score": 0.0005,
+     "stage_scores": {
+      "dense": 0.3195,
+      "dense_rank": 5,
+      "bm25": 9.8423,
+      "bm25_rank": 1,
+      "rrf": 0.0318,
+      "rerank": 0.0005,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i9",
+     "citation": "법 제2조 제9호",
+     "source_type": "law",
+     "score": 0.0005,
+     "stage_scores": {
+      "dense": 0.3032,
+      "dense_rank": 14,
+      "rrf": 0.0135,
+      "rerank": 0.0005,
+      "pre_rerank_rank": 14
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a22_2-p4",
+     "citation": "법 제22조의2 제4항",
+     "source_type": "law",
+     "score": 0.0003,
+     "stage_scores": {
+      "dense": 0.3242,
+      "dense_rank": 4,
+      "rrf": 0.0156,
+      "rerank": 0.0003,
+      "pre_rerank_rank": 6
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a22_2-p9",
+     "citation": "법 제22조의2 제9항",
+     "source_type": "law",
+     "score": 0.0003,
+     "stage_scores": {
+      "dense": 0.3114,
+      "dense_rank": 9,
+      "rrf": 0.0145,
+      "rerank": 0.0003,
+      "pre_rerank_rank": 10
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {},
+   "first_hit": null,
+   "candidate_recall": null,
+   "queries": [
+    "생성형 AI로 만든 그림의 저작권은 누구에게 있나요?"
+   ],
+   "query_prep_ms": 0.0002280576154589653
+  },
+  {
+   "id": "q043",
+   "type": "out_of_scope",
+   "question": "EU AI Act에서 고위험 AI 의무를 위반하면 벌금이 최대 얼마인가요?",
+   "gold": [],
+   "should_refuse": true,
+   "latency_ms": 1174.5164128951728,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a34",
+     "citation": "법 제34조",
+     "source_type": "law",
+     "score": 0.0024,
+     "stage_scores": {
+      "dense": 0.3782,
+      "dense_rank": 7,
+      "bm25": 2.2493,
+      "bm25_rank": 10,
+      "rrf": 0.0292,
+      "rerank": 0.0024,
+      "pre_rerank_rank": 3
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a43",
+     "citation": "법 제43조",
+     "source_type": "law",
+     "score": 0.0022,
+     "stage_scores": {
+      "bm25": 4.759,
+      "bm25_rank": 3,
+      "rrf": 0.0159,
+      "rerank": 0.0022,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a32",
+     "citation": "법 제32조",
+     "source_type": "law",
+     "score": 0.0019,
+     "stage_scores": {
+      "dense": 0.4189,
+      "dense_rank": 1,
+      "bm25": 6.7277,
+      "bm25_rank": 2,
+      "rrf": 0.0325,
+      "rerank": 0.0019,
+      "pre_rerank_rank": 1
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.0017,
+     "stage_scores": {
+      "bm25": 3.0983,
+      "bm25_rank": 6,
+      "rrf": 0.0152,
+      "rerank": 0.0017,
+      "pre_rerank_rank": 14
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a29",
+     "citation": "법 제29조",
+     "source_type": "law",
+     "score": 0.0016,
+     "stage_scores": {
+      "dense": 0.3984,
+      "dense_rank": 2,
+      "bm25": 2.4089,
+      "bm25_rank": 9,
+      "rrf": 0.0306,
+      "rerank": 0.0016,
+      "pre_rerank_rank": 2
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {},
+   "first_hit": null,
+   "candidate_recall": null,
+   "queries": [
+    "EU AI Act에서 고위험 AI 의무를 위반하면 벌금이 최대 얼마인가요?"
+   ],
+   "query_prep_ms": 0.0002139713615179062
+  },
+  {
+   "id": "q044",
+   "type": "out_of_scope",
+   "question": "내일 서울 날씨 어때?",
+   "gold": [],
+   "should_refuse": true,
+   "latency_ms": 1209.266090998426,
+   "retrieved": [
+    {
+     "rank": 1,
+     "chunk_id": "law:a2-i10",
+     "citation": "법 제2조 제10호",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.0807,
+      "dense_rank": 7,
+      "rrf": 0.0149,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 7
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 2,
+     "chunk_id": "law:a2-i2",
+     "citation": "법 제2조 제2호",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.0789,
+      "dense_rank": 9,
+      "rrf": 0.0145,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 9
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 3,
+     "chunk_id": "law:a2-i4",
+     "citation": "법 제2조 제4호",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.0655,
+      "dense_rank": 15,
+      "rrf": 0.0133,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 15
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 4,
+     "chunk_id": "law:a2-i9",
+     "citation": "법 제2조 제9호",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.0617,
+      "dense_rank": 16,
+      "rrf": 0.0132,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 16
+     },
+     "added_by": "search",
+     "via": null
+    },
+    {
+     "rank": 5,
+     "chunk_id": "law:a2-i8",
+     "citation": "법 제2조 제8호",
+     "source_type": "law",
+     "score": 0.0001,
+     "stage_scores": {
+      "dense": 0.0602,
+      "dense_rank": 17,
+      "rrf": 0.013,
+      "rerank": 0.0001,
+      "pre_rerank_rank": 17
+     },
+     "added_by": "search",
+     "via": null
+    }
+   ],
+   "gold_ranks": {},
+   "first_hit": null,
+   "candidate_recall": null,
+   "queries": [
+    "내일 서울 날씨 어때?"
+   ],
+   "query_prep_ms": 0.0004949979484081268
+  }
+ ]
+}

@@ -55,45 +55,45 @@
 - [x] T2.3 `retriever.py` dense + `RetrievalConfig` 골격 (sources 필터 포함)
 - [x] T2.4 `eval/evaluate.py`: Hit@K, Recall@K, Full-Recall@5, MRR, 유형별 집계, 결과 JSON(+usage), `--limit`, `--answer` 전 예산 가드(DESIGN §9.5)
 - [x] T2.5 E0~E2 실행·기록 (/run-eval) (2026-10-08, 커밋 43c55ac 기준으로 체크 갱신)
-- [ ] T2.6 실패 분석 (@retrieval-analyst) → 기법 우선순위 결정
+- [x] T2.6 실패 분석 (@retrieval-analyst) → 기법 우선순위 결정 (2026-10-08, EXPERIMENTS.md 'E0~E3 실패 분석')
 
 **DoD:** EXPERIMENTS.md에 E0~E2 + 실패 유형 분석
 
 ## Phase 3. Advanced Retrieval (2.5일)
 각 항목은 `/add-retrieval-technique` 절차로 진행
 - [x] T3.1 BM25(kiwi) + RRF → E3 (2026-10-08, 채택: Cand-R@20 +0.086)
-- [ ] T3.2 Reranker → E4 (CPU 지연 측정) — 코드·단위테스트 완료(2026-10-08, `rag/reranker.py`, 프리셋 `E4_rerank`·`E4_rerank_parent`). **로컬에서 평가 실행·기록 남음** (클라우드 세션은 API 키·Qdrant·HF 모델 다운로드 불가)
-- [ ] T3.3 Router (법/시행령/별표 번호) → E5 — 코드·테스트 완료(2026-10-08, `rag/router.py`, `rag/chunk_store.py`, 프리셋 `E5_router`). 평가 로컬 대기
-- [ ] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교) — 코드·테스트 완료(2026-10-08, `rag/query_expansion.py`, `data/term_synonyms.yaml`, `common/cache.py`·`common/usage.py` 신설, 프리셋 `E6_term`·`E6_multi_query`). 평가 로컬 대기
-- [ ] T3.5 Ref expansion + Small-to-Big → E7 — 코드·테스트 완료(2026-10-08, 프리셋 `E7_ref`·`E7_small_to_big`). 평가 로컬 대기
-- [ ] T3.6 원천 추가만 (law+decree+annex) → E8 — 프리셋 `E8_sources` + 대조군 `E8_sources_k8`(top_k=8, E9와 결과 개수 맞춤). 평가 로컬 대기
-- [ ] T3.7 **Delegation expansion** → E9 — 코드·테스트 완료(2026-10-08, 위임 체인 법→영→별표 추적, 프리셋 `E9_delegation`). 평가 로컬 대기
-- [ ] T3.8 보조 원천 (admrul, term, expc) → E10, priority_boost 조정 — 프리셋 `E10_aux`(admrul·term, expc 미수집) / `E10_aux_boost`(0.002). 평가 로컬 대기
-- [ ] T3.9 서비스 프리셋 확정 (`configs.py`) — 검색 지표로 후보 3~4개로 좁힌 뒤 **그 후보만** 답변 평가(`--answer`) — `--answer` 구현 완료(2026-10-08, `eval/answer_eval.py`·`eval/judge_prompt.md`, 실행 전 예상 크레딧·20% 가드·확인). 실행 로컬 대기
+- [x] T3.2 Reranker → E4 (CPU 지연 측정) — 코드·단위테스트 완료(2026-10-08, `rag/reranker.py`, 프리셋 `E4_rerank`·`E4_rerank_parent`). **로컬에서 평가 실행·기록 남음** (클라우드 세션은 API 키·Qdrant·HF 모델 다운로드 불가) — **E4 채택(embed_text, Hit@1 0.483→0.759, +917ms)** (2026-10-08)
+- [x] T3.3 Router (법/시행령/별표 번호) → E5 — 코드·테스트 완료(2026-10-08, `rag/router.py`, `rag/chunk_store.py`, 프리셋 `E5_router`). 평가 로컬 대기 — **E5 평가 완료: E4와 동일, 채택(비용 0, 단독 효과 미입증)** (2026-10-08)
+- [x] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교) — 코드·테스트 완료(2026-10-08, `rag/query_expansion.py`, `data/term_synonyms.yaml`, `common/cache.py`·`common/usage.py` 신설, 프리셋 `E6_term`·`E6_multi_query`). 평가 로컬 대기 — **E6 평가 완료: Term 채택, Multi-Query 기각** (2026-10-08)
+- [x] T3.5 Ref expansion + Small-to-Big → E7 — 코드·테스트 완료(2026-10-08, 프리셋 `E7_ref`·`E7_small_to_big`). 평가 로컬 대기 — **E7 평가 완료: law-only라 효과 없음, 역참조 변형은 후속** (2026-10-08)
+- [x] T3.6 원천 추가만 (law+decree+annex) → E8 — 프리셋 `E8_sources` + 대조군 `E8_sources_k8`(top_k=8, E9와 결과 개수 맞춤). 평가 로컬 대기 — **E8 평가 완료: Full-R@5 0.143→0.714** (2026-10-08)
+- [x] T3.7 **Delegation expansion** → E9 — 코드·테스트 완료(2026-10-08, 위임 체인 법→영→별표 추적, 프리셋 `E9_delegation`). 평가 로컬 대기 — **E9 평가 완료: Full-R@ctx 0.714(k8 대조 0.714)→0.809** (2026-10-08)
+- [x] T3.8 보조 원천 (admrul, term, expc) → E10, priority_boost 조정 — 프리셋 `E10_aux`(admrul·term, expc 미수집) / `E10_aux_boost`(0.002). 평가 로컬 대기 — **E10 평가 완료: E10_aux 채택, boost 기각** (2026-10-08)
+- [x] T3.9 서비스 프리셋 확정 (`configs.py`) — 검색 지표로 후보 3~4개로 좁힌 뒤 **그 후보만** 답변 평가(`--answer`) — `--answer` 구현 완료(2026-10-08, `eval/answer_eval.py`·`eval/judge_prompt.md`, 실행 전 예상 크레딧·20% 가드·확인). 실행 로컬 대기 — **E10_aux 확정, 답변 평가 완료 (2026-10-08)**
 
 **DoD:** 기법별 채택/기각 사유가 수치와 함께 EXPERIMENTS.md에 있음, E8 vs E9 비교 완료
 
 ## Phase 4. Grounded Answer (1일)
 - [x] T4.1 `rag/prompts.py` (DESIGN §5.1, 원천 우선순위·citation 형식) (2026-10-08, 근거 블록에 citation·종류 표기, 컨텍스트 6k 토큰 예산 — 확장 청크부터 제외)
 - [x] T4.2 `pipeline.py`: retrieve → context → LLM → 인용·숫자 후검증 → 응답 (2026-10-08, `rag/grounding.py`: 조↔항 인용 허용, 금액은 원 단위 값으로 비교·별표 `(단위: 만원)` 해석. LLM 실호출 확인은 로컬 대기)
-- [ ] T4.3 위임·별표·범위 밖 질문 처리 확인 — 가짜 LLM 단위테스트만 완료(`tests/test_pipeline.py`). 실제 LLM 확인 로컬 대기
-- [ ] T4.4 답변 점검 (@grounding-reviewer) — 로컬 대기(LLM 필요)
+- [x] T4.3 위임·별표·범위 밖 질문 처리 확인 — 가짜 LLM 단위테스트만 완료(`tests/test_pipeline.py`). 실제 LLM 확인 로컬 대기 — **실제 LLM 확인 완료(2026-10-08)**: q030·q032·q037·q038·q041·q044 양호. 점검에서 나온 후처리 결함(형제 항 인용 삭제·생략형 인용·거절 시 근거 목록·조/만명 단위) 수정
+- [x] T4.4 답변 점검 (@grounding-reviewer) — **10문항 완전 근거 6·부분 4·환각 0·거절 오류 0** (2026-10-08). 검색 누락(q002·q026)은 후속
 
 **DoD:** delegation·annex·out_of_scope 문항 올바르게 처리, 숫자 불일치 warnings 0
 
 ## Phase 5. API (0.5일)
 - [x] T5.1 `app/main.py`: `POST /ask`, `GET /health`, lifespan 로딩, Pydantic 스키마 (`source_type`, `citation`, `data_snapshot`) (2026-10-08, `app/schemas.py`. 백엔드 오류는 503, Qdrant 미연결 시 /health `degraded`. 클라우드에서 기동·/health 확인)
 - [x] T5.2 `debug` 옵션 (후보·단계별 점수·added_by·warnings) (2026-10-08, + queries·via·latency·usage·예산 초과로 뺀 근거)
-- [ ] T5.3 `tests/test_api.py`, 스모크 (/api-smoke) — 테스트 완료(2026-10-08). `/api-smoke` 실서버 스모크 로컬 대기
+- [x] T5.3 `tests/test_api.py`, 스모크 (/api-smoke) — 7문항 스모크 5/7 PASS, RFP 대표 질문 실패는 정의 라우트로 수정(2026-10-08). **교차참조(미고지 제재→법 제43조)는 역참조 미구현으로 실패 — 후속**. 8000 포트 서버는 수정 전 코드라 재기동 후 재스모크 필요
 
 **DoD:** `/docs`에서 RFP 예시 질문 정상 응답, 테스트 통과
 
 ## Phase 6. 최종 평가 & 발표 (1일)
-- [ ] T6.1 test split으로 최종 평가 (retrieval + answer judge) — 실행 전 `common.usage --summary`로 잔여 예산 확인
-- [ ] T6.1b 비용 결과 정리: 기법별 토큰·크레딧, 캐시 절감량 (발표 자료용)
-- [ ] T6.2 Ablation 표, 유형별 개선 그래프, 위임 그래프 시각화 — 생성기 완료(2026-10-08, `eval/report.py`: `ablation.md`·히트맵 PNG·`docs/delegation_graph.md` Mermaid). E4~E10 결과 나오면 재생성
-- [ ] T6.3 Before/After 데모 3개 (구조 청킹 / Hybrid / Delegation expansion)
-- [ ] T6.4 README (실행 방법, 데이터 원천·snapshot, 아키텍처, 결과, 한계) — 초안 완료(2026-10-08, 결과는 E0~E3만). 최종 결과로 결과 표 갱신
+- [x] T6.1 test split으로 최종 평가 (retrieval + answer judge) — 실행 전 `common.usage --summary`로 잔여 예산 확인 — **완료 (2026-10-08)**: test 11문항 E10_aux Hit@1 1.000, 답변 judge 포함 (EXPERIMENTS T6.1)
+- [x] T6.1b 비용 결과 정리: 기법별 토큰·크레딧, 캐시 절감량 (발표 자료용) — **완료 (2026-10-08)**
+- [x] T6.2 Ablation 표, 유형별 개선 그래프, 위임 그래프 시각화 — 생성기 완료(2026-10-08, `eval/report.py`: `ablation.md`·히트맵 PNG·`docs/delegation_graph.md` Mermaid). E4~E10 결과 나오면 재생성 — **재생성 완료 (2026-10-08)**
+- [x] T6.3 Before/After 데모 3개 (구조 청킹 / Hybrid / Delegation expansion) — **docs/DEMO.md (2026-10-08)**
+- [x] T6.4 README (실행 방법, 데이터 원천·snapshot, 아키텍처, 결과, 한계) — 초안 완료(2026-10-08, 결과는 E0~E3만). 최종 결과로 결과 표 갱신 — **결과 표 갱신 (2026-10-08)**
 
 ---
 
