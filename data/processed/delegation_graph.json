@@ -1,0 +1,1487 @@
+{
+ "nodes": [
+  {
+   "key": "law:a1",
+   "source_type": "law",
+   "label": "법 제1조",
+   "title": "목적",
+   "delegated": false
+  },
+  {
+   "key": "law:a2",
+   "source_type": "law",
+   "label": "법 제2조",
+   "title": "정의",
+   "delegated": true
+  },
+  {
+   "key": "law:a3",
+   "source_type": "law",
+   "label": "법 제3조",
+   "title": "기본원칙 및 국가 등의 책무",
+   "delegated": true
+  },
+  {
+   "key": "law:a4",
+   "source_type": "law",
+   "label": "법 제4조",
+   "title": "적용범위",
+   "delegated": true
+  },
+  {
+   "key": "law:a5",
+   "source_type": "law",
+   "label": "법 제5조",
+   "title": "다른 법률과의 관계",
+   "delegated": false
+  },
+  {
+   "key": "law:a6",
+   "source_type": "law",
+   "label": "법 제6조",
+   "title": "인공지능 기본계획의 수립",
+   "delegated": true
+  },
+  {
+   "key": "law:a7",
+   "source_type": "law",
+   "label": "법 제7조",
+   "title": "국가인공지능전략위원회",
+   "delegated": true
+  },
+  {
+   "key": "law:a8",
+   "source_type": "law",
+   "label": "법 제8조",
+   "title": "위원회의 기능",
+   "delegated": false
+  },
+  {
+   "key": "law:a9",
+   "source_type": "law",
+   "label": "법 제9조",
+   "title": "위원의 제척ㆍ기피 및 회피",
+   "delegated": false
+  },
+  {
+   "key": "law:a10",
+   "source_type": "law",
+   "label": "법 제10조",
+   "title": "분과위원회 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a11",
+   "source_type": "law",
+   "label": "법 제11조",
+   "title": "인공지능정책센터",
+   "delegated": true
+  },
+  {
+   "key": "law:a12",
+   "source_type": "law",
+   "label": "법 제12조",
+   "title": "인공지능안전연구소",
+   "delegated": true
+  },
+  {
+   "key": "law:a13",
+   "source_type": "law",
+   "label": "법 제13조",
+   "title": "인공지능기술 개발 및 안전한 이용 지원",
+   "delegated": true
+  },
+  {
+   "key": "law:a14",
+   "source_type": "law",
+   "label": "법 제14조",
+   "title": "인공지능기술의 표준화",
+   "delegated": true
+  },
+  {
+   "key": "law:a15",
+   "source_type": "law",
+   "label": "법 제15조",
+   "title": "인공지능 학습용데이터 관련 시책의 수립 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a16",
+   "source_type": "law",
+   "label": "법 제16조",
+   "title": "인공지능기술 도입ㆍ활용 시책 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a17",
+   "source_type": "law",
+   "label": "법 제17조",
+   "title": "중소기업등을 위한 특별지원",
+   "delegated": false
+  },
+  {
+   "key": "law:a17_2",
+   "source_type": "law",
+   "label": "법 제17조의2",
+   "title": "인공지능제품 및 인공지능서비스 이용비용의 지원",
+   "delegated": true
+  },
+  {
+   "key": "law:a18",
+   "source_type": "law",
+   "label": "법 제18조",
+   "title": "창업의 활성화 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a19",
+   "source_type": "law",
+   "label": "법 제19조",
+   "title": "인공지능 융합의 촉진",
+   "delegated": false
+  },
+  {
+   "key": "law:a20",
+   "source_type": "law",
+   "label": "법 제20조",
+   "title": "제도개선 등",
+   "delegated": false
+  },
+  {
+   "key": "law:a21",
+   "source_type": "law",
+   "label": "법 제21조",
+   "title": "전문인력의 확보",
+   "delegated": false
+  },
+  {
+   "key": "law:a22",
+   "source_type": "law",
+   "label": "법 제22조",
+   "title": "국제협력 및 해외시장 진출의 지원",
+   "delegated": true
+  },
+  {
+   "key": "law:a22_2",
+   "source_type": "law",
+   "label": "법 제22조의2",
+   "title": "인공지능연구소의 설립 및 지원 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a22_3",
+   "source_type": "law",
+   "label": "법 제22조의3",
+   "title": "인공지능기술 확보를 위한 연구기관의 설립ㆍ운영",
+   "delegated": true
+  },
+  {
+   "key": "law:a23",
+   "source_type": "law",
+   "label": "법 제23조",
+   "title": "인공지능집적단지 지정 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a24",
+   "source_type": "law",
+   "label": "법 제24조",
+   "title": "인공지능 실증기반 조성 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a25",
+   "source_type": "law",
+   "label": "법 제25조",
+   "title": "인공지능 데이터센터 관련 시책의 추진 등",
+   "delegated": false
+  },
+  {
+   "key": "law:a26",
+   "source_type": "law",
+   "label": "법 제26조",
+   "title": "한국인공지능진흥협회의 설립",
+   "delegated": true
+  },
+  {
+   "key": "law:a27",
+   "source_type": "law",
+   "label": "법 제27조",
+   "title": "인공지능 윤리원칙 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a28",
+   "source_type": "law",
+   "label": "법 제28조",
+   "title": "민간자율인공지능윤리위원회의 설치 등",
+   "delegated": true
+  },
+  {
+   "key": "law:a29",
+   "source_type": "law",
+   "label": "법 제29조",
+   "title": "인공지능 신뢰 기반 조성을 위한 시책의 마련",
+   "delegated": true
+  },
+  {
+   "key": "law:a30",
+   "source_type": "law",
+   "label": "법 제30조",
+   "title": "인공지능 안전성ㆍ신뢰성 검ㆍ인증등 지원",
+   "delegated": true
+  },
+  {
+   "key": "law:a31",
+   "source_type": "law",
+   "label": "법 제31조",
+   "title": "인공지능 투명성 확보 의무",
+   "delegated": true
+  },
+  {
+   "key": "law:a32",
+   "source_type": "law",
+   "label": "법 제32조",
+   "title": "인공지능 안전성 확보 의무",
+   "delegated": true
+  },
+  {
+   "key": "law:a33",
+   "source_type": "law",
+   "label": "법 제33조",
+   "title": "고영향 인공지능의 확인",
+   "delegated": true
+  },
+  {
+   "key": "law:a34",
+   "source_type": "law",
+   "label": "법 제34조",
+   "title": "고영향 인공지능과 관련한 사업자의 책무",
+   "delegated": true
+  },
+  {
+   "key": "law:a35",
+   "source_type": "law",
+   "label": "법 제35조",
+   "title": "고영향 인공지능 영향평가",
+   "delegated": true
+  },
+  {
+   "key": "law:a36",
+   "source_type": "law",
+   "label": "법 제36조",
+   "title": "국내대리인 지정",
+   "delegated": true
+  },
+  {
+   "key": "law:a37",
+   "source_type": "law",
+   "label": "법 제37조",
+   "title": "인공지능산업의 진흥을 위한 재원의 확충 등",
+   "delegated": false
+  },
+  {
+   "key": "law:a38",
+   "source_type": "law",
+   "label": "법 제38조",
+   "title": "실태조사, 통계 및 지표의 작성",
+   "delegated": true
+  },
+  {
+   "key": "law:a39",
+   "source_type": "law",
+   "label": "법 제39조",
+   "title": "권한의 위임 및 업무의 위탁",
+   "delegated": true
+  },
+  {
+   "key": "law:a40",
+   "source_type": "law",
+   "label": "법 제40조",
+   "title": "사실조사 등",
+   "delegated": false
+  },
+  {
+   "key": "law:a41",
+   "source_type": "law",
+   "label": "법 제41조",
+   "title": "벌칙 적용에서 공무원 의제",
+   "delegated": false
+  },
+  {
+   "key": "law:a42",
+   "source_type": "law",
+   "label": "법 제42조",
+   "title": "벌칙",
+   "delegated": false
+  },
+  {
+   "key": "law:a43",
+   "source_type": "law",
+   "label": "법 제43조",
+   "title": "과태료",
+   "delegated": true
+  },
+  {
+   "key": "law:add1",
+   "source_type": "law",
+   "label": "법 부칙",
+   "title": "부칙 <제20676호>",
+   "delegated": true
+  },
+  {
+   "key": "law:add2",
+   "source_type": "law",
+   "label": "법 부칙",
+   "title": "부칙 <제21065호>",
+   "delegated": false
+  },
+  {
+   "key": "law:add3",
+   "source_type": "law",
+   "label": "법 부칙",
+   "title": "부칙 <제21311호>",
+   "delegated": false
+  },
+  {
+   "key": "decree:a1",
+   "source_type": "decree",
+   "label": "영 제1조",
+   "title": "목적",
+   "delegated": false
+  },
+  {
+   "key": "decree:a1_2",
+   "source_type": "decree",
+   "label": "영 제1조의2",
+   "title": "인공지능취약계층의 범위",
+   "delegated": true
+  },
+  {
+   "key": "decree:a2",
+   "source_type": "decree",
+   "label": "영 제2조",
+   "title": "법의 적용 제외 인공지능",
+   "delegated": true
+  },
+  {
+   "key": "decree:a3",
+   "source_type": "decree",
+   "label": "영 제3조",
+   "title": "인공지능 기본계획의 수립",
+   "delegated": true
+  },
+  {
+   "key": "decree:a4",
+   "source_type": "decree",
+   "label": "영 제4조",
+   "title": "국가인공지능전략위원회의 구성 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a5",
+   "source_type": "decree",
+   "label": "영 제5조",
+   "title": "위원회의 운영",
+   "delegated": false
+  },
+  {
+   "key": "decree:a6",
+   "source_type": "decree",
+   "label": "영 제6조",
+   "title": "국가인공지능전략위원회지원단",
+   "delegated": false
+  },
+  {
+   "key": "decree:a7",
+   "source_type": "decree",
+   "label": "영 제7조",
+   "title": "개선권고의 이행",
+   "delegated": false
+  },
+  {
+   "key": "decree:a8",
+   "source_type": "decree",
+   "label": "영 제8조",
+   "title": "분과위원회 등",
+   "delegated": false
+  },
+  {
+   "key": "decree:a9",
+   "source_type": "decree",
+   "label": "영 제9조",
+   "title": "인공지능정책센터의 지정",
+   "delegated": false
+  },
+  {
+   "key": "decree:a10",
+   "source_type": "decree",
+   "label": "영 제10조",
+   "title": "인공지능안전연구소의 운영 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a11",
+   "source_type": "decree",
+   "label": "영 제11조",
+   "title": "인공지능기술 개발 및 안전한 이용 지원",
+   "delegated": true
+  },
+  {
+   "key": "decree:a12",
+   "source_type": "decree",
+   "label": "영 제12조",
+   "title": "인공지능 학습용데이터 지원대상사업 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a13",
+   "source_type": "decree",
+   "label": "영 제13조",
+   "title": "학습용데이터 통합제공시스템의 구축 및 관리",
+   "delegated": false
+  },
+  {
+   "key": "decree:a14",
+   "source_type": "decree",
+   "label": "영 제14조",
+   "title": "비용의 징수",
+   "delegated": true
+  },
+  {
+   "key": "decree:a15",
+   "source_type": "decree",
+   "label": "영 제15조",
+   "title": "인공지능기술 도입ㆍ활용 지원",
+   "delegated": true
+  },
+  {
+   "key": "decree:a15_2",
+   "source_type": "decree",
+   "label": "영 제15조의2",
+   "title": "인공지능제품 및 인공지능서비스 이용비용의 지원",
+   "delegated": false
+  },
+  {
+   "key": "decree:a15_3",
+   "source_type": "decree",
+   "label": "영 제15조의3",
+   "title": "창업의 활성화 등",
+   "delegated": false
+  },
+  {
+   "key": "decree:a16",
+   "source_type": "decree",
+   "label": "영 제16조",
+   "title": "국제협력 및 해외시장 진출 지원 위탁",
+   "delegated": false
+  },
+  {
+   "key": "decree:a16_2",
+   "source_type": "decree",
+   "label": "영 제16조의2",
+   "title": "인공지능연구소의 설립",
+   "delegated": true
+  },
+  {
+   "key": "decree:a16_3",
+   "source_type": "decree",
+   "label": "영 제16조의3",
+   "title": "인공지능연구소의 설립허가 절차 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a16_4",
+   "source_type": "decree",
+   "label": "영 제16조의4",
+   "title": "인공지능연구기관의 설립 준비",
+   "delegated": false
+  },
+  {
+   "key": "decree:a17",
+   "source_type": "decree",
+   "label": "영 제17조",
+   "title": "인공지능집적단지 지정 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a18",
+   "source_type": "decree",
+   "label": "영 제18조",
+   "title": "인공지능집적단지 전담기관",
+   "delegated": false
+  },
+  {
+   "key": "decree:a19",
+   "source_type": "decree",
+   "label": "영 제19조",
+   "title": "인공지능 실증기반 조성",
+   "delegated": true
+  },
+  {
+   "key": "decree:a20",
+   "source_type": "decree",
+   "label": "영 제20조",
+   "title": "한국인공지능진흥협회의 설립인가ㆍ지정 등",
+   "delegated": false
+  },
+  {
+   "key": "decree:a21",
+   "source_type": "decree",
+   "label": "영 제21조",
+   "title": "인공지능 윤리원칙의 제정 및 공표",
+   "delegated": false
+  },
+  {
+   "key": "decree:a22",
+   "source_type": "decree",
+   "label": "영 제22조",
+   "title": "인공지능 안전성ㆍ신뢰성 검ㆍ인증등 지원",
+   "delegated": true
+  },
+  {
+   "key": "decree:a23",
+   "source_type": "decree",
+   "label": "영 제23조",
+   "title": "인공지능 투명성 확보 의무",
+   "delegated": true
+  },
+  {
+   "key": "decree:a24",
+   "source_type": "decree",
+   "label": "영 제24조",
+   "title": "인공지능 안전성 확보 의무",
+   "delegated": true
+  },
+  {
+   "key": "decree:a25",
+   "source_type": "decree",
+   "label": "영 제25조",
+   "title": "고영향 인공지능의 확인 절차 등",
+   "delegated": true
+  },
+  {
+   "key": "decree:a26",
+   "source_type": "decree",
+   "label": "영 제26조",
+   "title": "전문위원회의 설치 및 운영",
+   "delegated": true
+  },
+  {
+   "key": "decree:a27",
+   "source_type": "decree",
+   "label": "영 제27조",
+   "title": "고영향 인공지능과 관련한 사업자의 책무",
+   "delegated": false
+  },
+  {
+   "key": "decree:a28",
+   "source_type": "decree",
+   "label": "영 제28조",
+   "title": "고영향 인공지능 영향평가",
+   "delegated": true
+  },
+  {
+   "key": "decree:a29",
+   "source_type": "decree",
+   "label": "영 제29조",
+   "title": "국내대리인 지정 사업자의 기준",
+   "delegated": true
+  },
+  {
+   "key": "decree:a30",
+   "source_type": "decree",
+   "label": "영 제30조",
+   "title": "실태조사, 통계 및 지표의 작성",
+   "delegated": false
+  },
+  {
+   "key": "decree:a31",
+   "source_type": "decree",
+   "label": "영 제31조",
+   "title": "업무의 위탁",
+   "delegated": true
+  },
+  {
+   "key": "decree:a32",
+   "source_type": "decree",
+   "label": "영 제32조",
+   "title": "과태료의 부과기준",
+   "delegated": false
+  },
+  {
+   "key": "decree:a33",
+   "source_type": "decree",
+   "label": "영 제33조",
+   "title": "규제의 재검토",
+   "delegated": false
+  },
+  {
+   "key": "decree:add1",
+   "source_type": "decree",
+   "label": "영 부칙",
+   "title": "부칙 <제36053호>",
+   "delegated": true
+  },
+  {
+   "key": "decree:add2",
+   "source_type": "decree",
+   "label": "영 부칙",
+   "title": "부칙 <제36506호>",
+   "delegated": false
+  },
+  {
+   "key": "decree:add3",
+   "source_type": "decree",
+   "label": "영 부칙",
+   "title": "부칙 <제36580호>",
+   "delegated": false
+  },
+  {
+   "key": "annex:1",
+   "source_type": "annex",
+   "label": "영 별표 1",
+   "title": "이행조치 인정 기준 및 절차(제27조제5항 관련)",
+   "delegated": false
+  },
+  {
+   "key": "annex:2",
+   "source_type": "annex",
+   "label": "영 별표 2",
+   "title": "과태료의 부과기준(제32조 관련)",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a1",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제1조",
+   "title": "목적",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a2",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제2조",
+   "title": "정의",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a3",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제3조",
+   "title": "확인 제외 대상",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a4",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제4조",
+   "title": "확인신청",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a5",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제5조",
+   "title": "확인기준 등",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a6",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제6조",
+   "title": "인공지능 활용 여부 결정",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a7",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제7조",
+   "title": "확인서의 발급 등",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a8",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제8조",
+   "title": "확인 취소",
+   "delegated": false
+  },
+  {
+   "key": "admrul:2100000283290-a9",
+   "source_type": "admrul",
+   "label": "고시 인공지능제품ㆍ서비스 확인 절차 제9조",
+   "title": "비밀유지의무",
+   "delegated": false
+  },
+  {
+   "key": "term:인공지능",
+   "source_type": "term",
+   "label": "법령용어 인공지능",
+   "title": "인공지능",
+   "delegated": false
+  },
+  {
+   "key": "term:고영향 인공지능",
+   "source_type": "term",
+   "label": "법령용어 고영향 인공지능",
+   "title": "고영향 인공지능",
+   "delegated": false
+  },
+  {
+   "key": "term:생성형 인공지능",
+   "source_type": "term",
+   "label": "법령용어 생성형 인공지능",
+   "title": "생성형 인공지능",
+   "delegated": false
+  },
+  {
+   "key": "term:인공지능사업자",
+   "source_type": "term",
+   "label": "법령용어 인공지능사업자",
+   "title": "인공지능사업자",
+   "delegated": false
+  },
+  {
+   "key": "term:영향받는 자",
+   "source_type": "term",
+   "label": "법령용어 영향받는 자",
+   "title": "영향받는 자",
+   "delegated": false
+  },
+  {
+   "key": "term:학습용데이터",
+   "source_type": "term",
+   "label": "법령용어 학습용데이터",
+   "title": "학습용데이터",
+   "delegated": false
+  }
+ ],
+ "edges": [
+  {
+   "from": "law:a6",
+   "to": "law:a7",
+   "type": "ref"
+  },
+  {
+   "from": "law:a12",
+   "to": "law:a32",
+   "type": "ref"
+  },
+  {
+   "from": "law:a17",
+   "to": "law:a34",
+   "type": "ref"
+  },
+  {
+   "from": "law:a17",
+   "to": "law:a35",
+   "type": "ref"
+  },
+  {
+   "from": "law:a18",
+   "to": "law:a21",
+   "type": "ref"
+  },
+  {
+   "from": "law:a24",
+   "to": "law:a30",
+   "type": "ref"
+  },
+  {
+   "from": "law:a36",
+   "to": "law:a32",
+   "type": "ref"
+  },
+  {
+   "from": "law:a36",
+   "to": "law:a33",
+   "type": "ref"
+  },
+  {
+   "from": "law:a36",
+   "to": "law:a34",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "law:a13",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "law:a15",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "law:a18",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "law:a30",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "law:a38",
+   "type": "ref"
+  },
+  {
+   "from": "law:a40",
+   "to": "law:a31",
+   "type": "ref"
+  },
+  {
+   "from": "law:a40",
+   "to": "law:a32",
+   "type": "ref"
+  },
+  {
+   "from": "law:a40",
+   "to": "law:a34",
+   "type": "ref"
+  },
+  {
+   "from": "law:a41",
+   "to": "law:a39",
+   "type": "ref"
+  },
+  {
+   "from": "law:a42",
+   "to": "law:a7",
+   "type": "ref"
+  },
+  {
+   "from": "law:a43",
+   "to": "law:a31",
+   "type": "ref"
+  },
+  {
+   "from": "law:a43",
+   "to": "law:a36",
+   "type": "ref"
+  },
+  {
+   "from": "law:a43",
+   "to": "law:a40",
+   "type": "ref"
+  },
+  {
+   "from": "law:a3",
+   "to": "decree:a1_2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a1_2",
+   "to": "law:a3",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a1_2",
+   "to": "law:a2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a4",
+   "to": "decree:a2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a2",
+   "to": "law:a4",
+   "type": "ref"
+  },
+  {
+   "from": "law:a6",
+   "to": "decree:a3",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a3",
+   "to": "law:a6",
+   "type": "ref"
+  },
+  {
+   "from": "law:a7",
+   "to": "decree:a4",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a4",
+   "to": "law:a7",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a4",
+   "to": "law:a9",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a5",
+   "to": "law:a10",
+   "type": "ref"
+  },
+  {
+   "from": "law:a7",
+   "to": "decree:a6",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a6",
+   "to": "law:a7",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a7",
+   "to": "law:a8",
+   "type": "ref"
+  },
+  {
+   "from": "law:a7",
+   "to": "decree:a8",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a8",
+   "to": "law:a7",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a8",
+   "to": "decree:a4",
+   "type": "ref"
+  },
+  {
+   "from": "law:a10",
+   "to": "decree:a8",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a8",
+   "to": "law:a10",
+   "type": "ref"
+  },
+  {
+   "from": "law:a11",
+   "to": "decree:a9",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a9",
+   "to": "law:a11",
+   "type": "ref"
+  },
+  {
+   "from": "law:a12",
+   "to": "decree:a10",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a10",
+   "to": "law:a12",
+   "type": "ref"
+  },
+  {
+   "from": "law:a13",
+   "to": "decree:a11",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a11",
+   "to": "law:a13",
+   "type": "ref"
+  },
+  {
+   "from": "law:a15",
+   "to": "decree:a12",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a12",
+   "to": "law:a15",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a12",
+   "to": "law:a2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a15",
+   "to": "decree:a13",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a13",
+   "to": "law:a15",
+   "type": "ref"
+  },
+  {
+   "from": "law:a15",
+   "to": "decree:a14",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a14",
+   "to": "law:a15",
+   "type": "ref"
+  },
+  {
+   "from": "law:a16",
+   "to": "decree:a15",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "law:a16",
+   "type": "ref"
+  },
+  {
+   "from": "law:a17_2",
+   "to": "decree:a15_2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15_2",
+   "to": "law:a17_2",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a15_2",
+   "to": "decree:a1_2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a18",
+   "to": "decree:a15_3",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15_3",
+   "to": "law:a18",
+   "type": "ref"
+  },
+  {
+   "from": "law:a22",
+   "to": "decree:a16",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a16",
+   "to": "law:a22",
+   "type": "ref"
+  },
+  {
+   "from": "law:a22_2",
+   "to": "decree:a16_2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a16_2",
+   "to": "law:a22_2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a22_2",
+   "to": "decree:a16_3",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a16_3",
+   "to": "law:a22_2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a22_3",
+   "to": "decree:a16_4",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a16_4",
+   "to": "law:a22_3",
+   "type": "ref"
+  },
+  {
+   "from": "law:a23",
+   "to": "decree:a17",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a17",
+   "to": "law:a23",
+   "type": "ref"
+  },
+  {
+   "from": "law:a23",
+   "to": "decree:a18",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a18",
+   "to": "law:a23",
+   "type": "ref"
+  },
+  {
+   "from": "law:a24",
+   "to": "decree:a19",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a19",
+   "to": "law:a24",
+   "type": "ref"
+  },
+  {
+   "from": "law:a26",
+   "to": "decree:a20",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a20",
+   "to": "law:a26",
+   "type": "ref"
+  },
+  {
+   "from": "law:a27",
+   "to": "decree:a21",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a21",
+   "to": "law:a27",
+   "type": "ref"
+  },
+  {
+   "from": "law:a30",
+   "to": "decree:a22",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a22",
+   "to": "law:a30",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a22",
+   "to": "law:a16",
+   "type": "ref"
+  },
+  {
+   "from": "law:a31",
+   "to": "decree:a23",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a23",
+   "to": "law:a31",
+   "type": "ref"
+  },
+  {
+   "from": "law:a32",
+   "to": "decree:a24",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a24",
+   "to": "law:a32",
+   "type": "ref"
+  },
+  {
+   "from": "law:a33",
+   "to": "decree:a25",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a25",
+   "to": "law:a33",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a25",
+   "to": "law:a2",
+   "type": "ref"
+  },
+  {
+   "from": "law:a33",
+   "to": "decree:a26",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a26",
+   "to": "law:a2",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a26",
+   "to": "law:a33",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a27",
+   "to": "law:a34",
+   "type": "ref"
+  },
+  {
+   "from": "law:a34",
+   "to": "decree:a27",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a27",
+   "to": "annex:1",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a35",
+   "to": "decree:a28",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a28",
+   "to": "law:a35",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a28",
+   "to": "law:a3",
+   "type": "ref"
+  },
+  {
+   "from": "law:a36",
+   "to": "decree:a29",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a29",
+   "to": "law:a36",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a29",
+   "to": "law:a43",
+   "type": "ref"
+  },
+  {
+   "from": "law:a38",
+   "to": "decree:a30",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a30",
+   "to": "law:a38",
+   "type": "ref"
+  },
+  {
+   "from": "law:a39",
+   "to": "decree:a31",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a39",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a19",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a23",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a25",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a33",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "law:a38",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a31",
+   "to": "decree:a15",
+   "type": "ref"
+  },
+  {
+   "from": "law:a43",
+   "to": "decree:a32",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a32",
+   "to": "law:a43",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a32",
+   "to": "annex:2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a33",
+   "to": "decree:a18",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a33",
+   "to": "decree:a24",
+   "type": "ref"
+  },
+  {
+   "from": "decree:a33",
+   "to": "decree:a29",
+   "type": "ref"
+  },
+  {
+   "from": "law:add1",
+   "to": "decree:add1",
+   "type": "delegation"
+  },
+  {
+   "from": "annex:1",
+   "to": "law:a34",
+   "type": "ref"
+  },
+  {
+   "from": "annex:1",
+   "to": "law:a2",
+   "type": "ref"
+  },
+  {
+   "from": "annex:2",
+   "to": "law:a43",
+   "type": "ref"
+  },
+  {
+   "from": "annex:2",
+   "to": "law:a31",
+   "type": "ref"
+  },
+  {
+   "from": "annex:2",
+   "to": "law:a36",
+   "type": "ref"
+  },
+  {
+   "from": "annex:2",
+   "to": "law:a40",
+   "type": "ref"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a1",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a1",
+   "type": "delegation"
+  },
+  {
+   "from": "admrul:2100000283290-a1",
+   "to": "law:a16",
+   "type": "ref"
+  },
+  {
+   "from": "admrul:2100000283290-a1",
+   "to": "decree:a15",
+   "type": "ref"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a2",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a2",
+   "type": "delegation"
+  },
+  {
+   "from": "admrul:2100000283290-a2",
+   "to": "law:a26",
+   "type": "ref"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a3",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a3",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a4",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a4",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a5",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a5",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a6",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a6",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a7",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a7",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a8",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a8",
+   "type": "delegation"
+  },
+  {
+   "from": "law:a16",
+   "to": "admrul:2100000283290-a9",
+   "type": "delegation"
+  },
+  {
+   "from": "decree:a15",
+   "to": "admrul:2100000283290-a9",
+   "type": "delegation"
+  }
+ ]
+}
