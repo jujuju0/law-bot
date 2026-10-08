@@ -12,6 +12,7 @@ from rag import retriever
 from rag.config import get_preset
 from rag.reranker import pair_text, rerank
 from rag.retriever import RetrievedChunk, retrieve_with_trace
+from rag.router import parse_article_refs
 
 
 def chunk(chunk_id: str, text: str, score: float = 0.0, **payload) -> RetrievedChunk:
@@ -115,3 +116,57 @@ def test_real_reranker_lifts_q009() -> None:
     assert "law:a31" in [c.article_key for c in out], [
         asdict(c)["citation"] for c in out
     ]
+
+
+# ---------------------------------------------------------------------------
+# Router (T3.3) — chunks.jsonl만 사용
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize(
+    ("question", "keys"),
+    [
+        ("법 제28조는 무엇에 관한 조문인가요?", ["law:a28"]),
+        ("시행령 25조 내용 알려줘", ["decree:a25"]),
+        ("인공지능기본법 31조를 요약해 주세요.", ["law:a31"]),
+        ("영 제24조에서 정한 기준을 알려주세요.", ["decree:a24"]),
+        ("영 제1조의2와 법 제3조", ["decree:a1_2", "law:a3"]),
+        ("법 제31조제2항", ["law:a31"]),
+        ("시행령 별표 2 과태료", ["annex:2"]),
+        ("매출 1조원 이상이면?", []),
+        ("고영향 인공지능이 뭐야?", []),
+    ],
+)
+def test_parse_article_refs(question: str, keys: list[str]) -> None:
+    assert parse_article_refs(question) == keys
+
+
+def test_router_pins_article_first(monkeypatch) -> None:
+    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: list(CANDIDATES))
+    cfg = replace(get_preset("E2_header"), use_router=True, top_k=3)
+    out = retrieve_with_trace("인공지능기본법 28조를 요약해 주세요.", cfg).results
+    assert len(out) == 3
+    assert out[0].article_key == "law:a28"
+    assert out[0].added_by == "router"
+    assert out[0].stage_scores["router"] == 1.0
+    assert [c.chunk_id for c in out[1:]] == ["a3", "a12"]
+
+
+def test_router_respects_sources(monkeypatch) -> None:
+    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: list(CANDIDATES))
+    law_only = replace(get_preset("E2_header"), use_router=True)
+    out = retrieve_with_trace("시행령 25조 내용 알려줘", law_only).results
+    assert all(c.added_by == "search" for c in out)
+
+    with_decree = replace(law_only, sources=("law", "decree"))
+    out = retrieve_with_trace("시행령 25조 내용 알려줘", with_decree).results
+    assert out[0].article_key == "decree:a25"
+
+
+def test_router_moves_existing_hit_to_front(monkeypatch) -> None:
+    found = chunk("x", "본문", 0.5)
+    found.article_key = "law:a28"
+    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: [*CANDIDATES, found])
+    cfg = replace(get_preset("E2_header"), use_router=True)
+    out = retrieve_with_trace("법 제28조는?", cfg).results
+    assert out[0].chunk_id == "x"
+    assert out[0].added_by == "search"
+    assert len({c.chunk_id for c in out}) == len(out)

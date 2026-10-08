@@ -8,15 +8,13 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable
-from dataclasses import asdict
 from functools import lru_cache
 from pathlib import Path
 
 from kiwipiepy import Kiwi
 from rank_bm25 import BM25Okapi
 
-from common.config import PROCESSED_DIR
-from rag.chunker import load_chunks
+from rag.chunk_store import CHUNKS_PATH, get_chunk_store
 from rag.korean import content_tokens, kiwi_with_user_words
 
 # 법령 정의 문장의 정의어: "국내대리인"이란 / "협회"라 한다 / "위원회"라 한다
@@ -53,6 +51,13 @@ class BM25Index:
         """색인·질의 공통 토큰화."""
         return content_tokens(text, self.kiwi, STOPWORDS)
 
+    def scores(self, query: str) -> dict[str, float]:
+        """질의에 대한 청크별 BM25 점수(chunk_id → 점수). 확장 단계의 대표 청크 선택용."""
+        values = self._bm25.get_scores(self.tokenize(query))
+        return {
+            p["chunk_id"]: float(s) for p, s in zip(self.payloads, values, strict=True)
+        }
+
     def search(
         self, query: str, sources: tuple[str, ...], limit: int
     ) -> list[tuple[dict, float]]:
@@ -71,10 +76,8 @@ class BM25Index:
 
 
 @lru_cache(maxsize=4)
-def get_bm25_index(
-    path: Path = PROCESSED_DIR / "chunks.jsonl", field: str = "embed_text"
-) -> BM25Index:
+def get_bm25_index(path: Path = CHUNKS_PATH, field: str = "embed_text") -> BM25Index:
     """chunks.jsonl로 만든 BM25 색인 싱글톤(경로·필드별 1회)."""
-    payloads = [asdict(c) for c in load_chunks(path)]
+    payloads = get_chunk_store(path).payloads
     kiwi = kiwi_with_user_words(defined_terms(p["text"] for p in payloads))
     return BM25Index(payloads, field=field, kiwi=kiwi)

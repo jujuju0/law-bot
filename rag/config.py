@@ -26,6 +26,9 @@ class RetrievalConfig:
     # 재순위화 입력 문서: embed_text | parent_text | text
     rerank_field: str = "embed_text"
     rerank_max_length: int = 512
+    use_router: bool = (
+        False  # T3.3: 질문의 "제N조"·"시행령 제N조"·"별표 N" 조를 맨 앞에 고정
+    )
 
 
 E0 = RetrievalConfig(name="E0_naive", collection=NAIVE_COLLECTION_NAME)
@@ -35,6 +38,8 @@ E3 = replace(E2, name="E3_hybrid", use_bm25=True)
 E4 = replace(E3, name="E4_rerank", use_rerank=True)
 # E4 변형: 입력을 조 전체(parent_text)로 — 항·호 청크도 조 문맥으로 판단 (/add-retrieval-technique 메모)
 E4_PARENT = replace(E4, name="E4_rerank_parent", rerank_field="parent_text")
+# E4 결과(로컬 실행 대기)에 따라 E5 이후의 기반을 E3/E4 중 고른다 — 현재는 계획(DESIGN §8)대로 E4 위에 쌓음
+E5 = replace(E4, name="E5_router", use_router=True)
 
 PRESETS: dict[str, RetrievalConfig] = {
     cfg.name: cfg
@@ -45,6 +50,7 @@ PRESETS: dict[str, RetrievalConfig] = {
         E3,
         E4,
         E4_PARENT,
+        E5,
         replace(E2, name="baseline"),
     )
 }

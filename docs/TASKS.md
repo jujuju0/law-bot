@@ -63,7 +63,7 @@
 각 항목은 `/add-retrieval-technique` 절차로 진행
 - [x] T3.1 BM25(kiwi) + RRF → E3 (2026-10-08, 채택: Cand-R@20 +0.086)
 - [ ] T3.2 Reranker → E4 (CPU 지연 측정) — 코드·단위테스트 완료(2026-10-08, `rag/reranker.py`, 프리셋 `E4_rerank`·`E4_rerank_parent`). **로컬에서 평가 실행·기록 남음** (클라우드 세션은 API 키·Qdrant·HF 모델 다운로드 불가)
-- [ ] T3.3 Router (법/시행령/별표 번호) → E5
+- [ ] T3.3 Router (법/시행령/별표 번호) → E5 — 코드·테스트 완료(2026-10-08, `rag/router.py`, `rag/chunk_store.py`, 프리셋 `E5_router`). 평가 로컬 대기
 - [ ] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교)
 - [ ] T3.5 Ref expansion + Small-to-Big → E7
 - [ ] T3.6 원천 추가만 (law+decree+annex) → E8
@@ -94,6 +94,18 @@
 - [ ] T6.2 Ablation 표, 유형별 개선 그래프, 위임 그래프 시각화
 - [ ] T6.3 Before/After 데모 3개 (구조 청킹 / Hybrid / Delegation expansion)
 - [ ] T6.4 README (실행 방법, 데이터 원천·snapshot, 아키텍처, 결과, 한계)
+
+---
+
+## 로컬 실행 대기 (.env·Qdrant·HF 모델 필요)
+클라우드 세션(2026-10-08)에는 `.env`(API 키)·임베딩 캐시·Qdrant 데이터가 없고 HuggingFace가 막혀 있어
+코드·단위테스트까지만 하고 아래 실행은 로컬로 미뤘다. 위에서부터 순서대로 실행하고 결과를 EXPERIMENTS.md에 기록(`/run-eval`).
+
+1. 사전 점검: `docker compose -f docker-qdrant/docker-compose.yaml up -d` → `uv run python -m eval.evaluate --validate-only`
+2. **T3.2 E4** `uv run python -m eval.evaluate --config E4_rerank,E4_rerank_parent` (첫 실행 시 bge-reranker-v2-m3 약 2GB 다운로드)
+   - `RUN_RERANK_MODEL=1 uv run pytest -q tests/test_retriever.py`
+   - CPU p50 지연을 E3(5ms)와 비교. `embed_text` vs `parent_text` 중 나은 쪽 채택. **기각 시** `rag/config.py`의 E5 이후 프리셋 기반을 `E4`→`E3`로 바꿀 것
+3. **T3.3 E5** `uv run python -m eval.evaluate --config E5_router` — article_lookup(q007·q009) Hit@1 확인. q008·q011은 시행령이라 sources=law에선 구조적 불가(→E8)
 
 ---
 

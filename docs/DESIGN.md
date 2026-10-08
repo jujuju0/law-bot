@@ -201,7 +201,7 @@ class RetrievalConfig:
 ### 4.2 단계
 | 단계 | 구현 | 노트 |
 |---|---|---|
-| Router | `(시행령\s*)?제\s*(\d+)\s*조(의\s*\d+)?`, `별표\s*(\d+)` → payload filter 직접 조회 | "시행령" 언급 시 `source_type=decree` |
+| Router | `rag/router.py`: `(법\|시행령\|영)? (제)?N조(의M)?`, `별표 N` → 조 키 → `rag/chunk_store.py`(chunks.jsonl 인메모리)에서 조 청크 조회, 결과 맨 앞 고정(총 top_k 유지, 이미 있으면 앞으로 이동) | 접두어 없으면 질문에 "시행령"이 있을 때 decree. `cfg.sources` 밖의 조는 무시. 조 안의 대표 청크는 질문 BM25 점수 최고 |
 | Term expansion | 질문에 법령용어 사전의 동의어·일상어가 있으면 정식 용어를 덧붙임 | Multi-Query보다 싸고 결정적 |
 | Dense | Qdrant `query_points(filter=source_type in cfg.sources)` | |
 | BM25 | kiwipiepy 형태소 + rank_bm25 (`chunks.jsonl` 기반) | |

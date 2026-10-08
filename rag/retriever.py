@@ -11,9 +11,11 @@ from qdrant_client import QdrantClient, models
 from common.config import COLLECTION_NAME, RAW_COLLECTION_NAME
 from common.qdrant import get_qdrant_client
 from rag.bm25 import get_bm25_index
+from rag.chunk_store import get_chunk_store
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
 from rag.reranker import get_cross_encoder, rerank
+from rag.router import parse_article_refs
 from rag.vectorstore import VECTOR_NAME
 
 
@@ -40,9 +42,13 @@ class RetrievedChunk:
 
     @classmethod
     def from_payload(
-        cls, payload: dict[str, Any], score: float, stage: str
+        cls,
+        payload: dict[str, Any],
+        score: float,
+        stage: str,
+        added_by: str = "search",
     ) -> RetrievedChunk:
-        """Qdrant payload → RetrievedChunk."""
+        """Qdrant/chunks.jsonl payload → RetrievedChunk."""
         return cls(
             chunk_id=payload["chunk_id"],
             source_type=payload["source_type"],
@@ -53,6 +59,7 @@ class RetrievedChunk:
             article_key=payload["article_key"],
             score=score,
             stage_scores={stage: score},
+            added_by=added_by,
             payload=payload,
         )
 
@@ -114,6 +121,38 @@ def _rrf(rankings: list[list[RetrievedChunk]], k: int) -> list[RetrievedChunk]:
     return sorted(fused.values(), key=lambda c: c.score, reverse=True)
 
 
+def _representative(question: str, key: str) -> dict[str, Any] | None:
+    """조 키의 청크 중 질문과 BM25 점수가 가장 높은 것(동점이면 조문 순서상 첫 청크)."""
+    payloads = get_chunk_store().article(key)
+    if not payloads:
+        return None
+    scores = get_bm25_index().scores(question)
+    return max(payloads, key=lambda p: scores.get(p["chunk_id"], 0.0))
+
+
+def _route(
+    question: str, results: list[RetrievedChunk], cfg: RetrievalConfig
+) -> list[RetrievedChunk]:
+    """질문에 조·별표 번호가 있으면 해당 조 청크를 맨 앞에 고정한다(원천 필터 적용, 총 top_k 유지)."""
+    top_score = results[0].score if results else 1.0
+    routed = []
+    for key in parse_article_refs(question):
+        if key.split(":", 1)[0] not in cfg.sources:
+            continue
+        hit = next((c for c in results if c.article_key == key), None)
+        if hit is None and (payload := _representative(question, key)) is not None:
+            hit = RetrievedChunk.from_payload(payload, top_score, "router", "router")
+        if hit is not None:
+            routed.append(
+                replace(hit, stage_scores={**hit.stage_scores, "router": 1.0})
+            )
+    if not routed:
+        return results
+    ids = {c.chunk_id for c in routed}
+    rest = [c for c in results if c.chunk_id not in ids]
+    return (routed + rest)[: cfg.top_k]
+
+
 @dataclass
 class RetrievalTrace:
     """검색 1회의 최종 결과와 중간 후보(평가의 후보 재현율·API debug용)."""
@@ -132,7 +171,7 @@ def _rerank(
 
 
 def retrieve_with_trace(question: str, cfg: RetrievalConfig) -> RetrievalTrace:
-    """질문 → 최종 상위 `cfg.top_k`개 + 1단계 후보. 단계: dense (+ BM25 → RRF) (+ rerank)."""
+    """질문 → 최종 상위 `cfg.top_k`개 + 1단계 후보. 단계: dense (+ BM25 → RRF) (+ rerank) (+ router)."""
     limit = max(cfg.candidate_k, cfg.top_k)
     candidates = _dense(question, cfg, limit)
     if cfg.use_bm25:
@@ -142,12 +181,14 @@ def retrieve_with_trace(question: str, cfg: RetrievalConfig) -> RetrievalTrace:
         if cfg.use_rerank
         else candidates[: cfg.top_k]
     )
+    if cfg.use_router:
+        results = _route(question, results, cfg)
     return RetrievalTrace(results=results, candidates=candidates)
 
 
 def warmup(cfg: RetrievalConfig) -> None:
     """설정에 필요한 무거운 객체(BM25 색인, CrossEncoder)를 미리 로딩한다(지연 측정·서비스 기동용)."""
-    if cfg.use_bm25:
+    if cfg.use_bm25 or cfg.use_router:
         get_bm25_index()
     if cfg.use_rerank:
         get_cross_encoder(max_length=cfg.rerank_max_length)
