@@ -63,6 +63,20 @@ def cache_key(
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
+def is_cached(
+    messages: Sequence[Message],
+    *,
+    model: str = MODEL,
+    temperature: float | None = TEMPERATURE,
+    max_tokens: int = MAX_TOKENS,
+) -> bool:
+    """이 호출이 캐시에 있는지(예산 추정에서 캐시 hit 제외용)."""
+    if temperature not in (None, 0):
+        return False
+    key = cache_key(messages, model, temperature, max_tokens)
+    return get_llm_cache().get(key) is not None
+
+
 def _invoke(
     messages: Sequence[Message], model: str, temperature: float | None, max_tokens: int
 ) -> dict[str, Any]:

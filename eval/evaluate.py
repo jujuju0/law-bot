@@ -4,6 +4,7 @@
 LLM에 실제로 들어가는 전체 결과 기준 `recall@ctx`·`full_recall@ctx`를 따로 계산한다.
 
 사용: uv run python -m eval.evaluate --config E0_naive,E1_structure,E2_header [--split dev] [--limit 5]
+      uv run python -m eval.evaluate --config full --answer [--yes]   # 답변+judge, 실행 전 예산 확인
       uv run python -m eval.evaluate --validate-only
 """
 
@@ -23,6 +24,7 @@ from typing import Any
 
 from common.config import PROJECT_ROOT
 from common.usage import Usage, record, tracker
+from eval import answer_eval
 from eval.configs import get_preset
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
@@ -335,6 +337,12 @@ def main() -> None:
     parser.add_argument("--split", default="dev", choices=["dev", "test", "all"])
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--limit", type=int, help="앞에서 N문항만(개발 중 빠른 확인용)")
+    parser.add_argument(
+        "--answer",
+        action="store_true",
+        help="답변 생성 + LLM judge (최종 후보 config에만, DESIGN §9)",
+    )
+    parser.add_argument("--yes", action="store_true", help="--answer 예산 확인 생략")
     args = parser.parse_args()
 
     questions = load_golden(split=args.split)[: args.limit]
@@ -356,6 +364,46 @@ def main() -> None:
         path = save(cfg, args.split, results, usage)
         record("eval_retrieval", name, usage)
         print(_fmt_row(name, summarize(results)), f"→ {path.relative_to(PROJECT_ROOT)}")
+        if args.answer:
+            run_answer_eval(cfg, args.split, questions, yes=args.yes)
+
+
+def run_answer_eval(
+    cfg: RetrievalConfig, split: str, questions: list[dict[str, Any]], yes: bool
+) -> Path | None:
+    """답변 평가: 예산 가드 → 답변·judge → `{timestamp}_{config}_answer.json` + 장부 기록."""
+    plans = answer_eval.plan(cfg, questions)
+    if not answer_eval.check_budget(answer_eval.estimate(plans), yes=yes):
+        print(f"{cfg.name}: 답변 평가 건너뜀")
+        return None
+    before = tracker.snapshot()
+    results = answer_eval.run_answers(cfg, plans)
+    usage = tracker.snapshot() - before
+    record("eval_answer", cfg.name, usage)
+    summary = answer_eval.summarize_answers(results)
+    by_type: dict[str, list[answer_eval.AnswerResult]] = defaultdict(list)
+    for r in results:
+        by_type[r.type].append(r)
+    path = RESULTS_DIR / (
+        f"{datetime.now().astimezone():%Y%m%d-%H%M%S}_{cfg.name}_answer.json"
+    )
+    payload = {
+        "config": asdict(cfg),
+        "split": split,
+        "judge_model": answer_eval.JUDGE_MODEL,
+        "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "summary": summary,
+        "by_type": {t: answer_eval.summarize_answers(rs) for t, rs in by_type.items()},
+        "usage": usage.to_dict(),
+        "questions": [asdict(r) for r in results],
+    }
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(
+        f"{cfg.name} 답변: " + json.dumps(summary, ensure_ascii=False),
+        f"→ {path.relative_to(PROJECT_ROOT)}",
+    )
+    return path
 
 
 if __name__ == "__main__":

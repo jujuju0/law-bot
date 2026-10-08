@@ -69,7 +69,7 @@
 - [ ] T3.6 원천 추가만 (law+decree+annex) → E8 — 프리셋 `E8_sources` + 대조군 `E8_sources_k8`(top_k=8, E9와 결과 개수 맞춤). 평가 로컬 대기
 - [ ] T3.7 **Delegation expansion** → E9 — 코드·테스트 완료(2026-10-08, 위임 체인 법→영→별표 추적, 프리셋 `E9_delegation`). 평가 로컬 대기
 - [ ] T3.8 보조 원천 (admrul, term, expc) → E10, priority_boost 조정 — 프리셋 `E10_aux`(admrul·term, expc 미수집) / `E10_aux_boost`(0.002). 평가 로컬 대기
-- [ ] T3.9 서비스 프리셋 확정 (`configs.py`) — 검색 지표로 후보 3~4개로 좁힌 뒤 **그 후보만** 답변 평가(`--answer`)
+- [ ] T3.9 서비스 프리셋 확정 (`configs.py`) — 검색 지표로 후보 3~4개로 좁힌 뒤 **그 후보만** 답변 평가(`--answer`) — `--answer` 구현 완료(2026-10-08, `eval/answer_eval.py`·`eval/judge_prompt.md`, 실행 전 예상 크레딧·20% 가드·확인). 실행 로컬 대기
 
 **DoD:** 기법별 채택/기각 사유가 수치와 함께 EXPERIMENTS.md에 있음, E8 vs E9 비교 완료
 
@@ -123,6 +123,12 @@
    범위 밖인데 LLM이 거절하지 않으면 `rag/prompts.py` 규칙 7 강화 또는 검색 점수 임계값 도입 검토(E3 결과의 `refusal_top1_scores` 참고)
 10. **T4.4** `@grounding-reviewer` 에이전트로 dev 10문항 점검
 11. **T5.3** `/api-smoke` — `SERVICE_RETRIEVAL_PRESET`(기본 `full`)으로 서버 기동, 유형별 7문항
+12. **T3.9 답변 평가** (크레딧 사용 — 실행 전 사용자 승인):
+    - `.env`에 `JUDGE_MODEL` 확정(실험 중 변경 금지 → EXPERIMENTS.md 상단에 기록), `CREDIT_PER_1K_*` 단가 기록
+    - `uv run python -m common.usage --summary`로 잔여 확인
+    - `uv run python -m eval.evaluate --config <후보> --answer --limit 5`로 실제 토큰 확인 → 후보 3~4개 dev 전체
+    - 실행 전 출력되는 "예상 … 크레딧"을 보고 승인. 잔여의 20% 초과면 자동 중단
+    - 결과: `eval/results/*_answer.json` (judge 평균, grounded·환각 인용·숫자 불일치·거절 정확도, 유형별)
 
 ---
 

@@ -18,7 +18,7 @@ from rag.config import RetrievalConfig, get_preset
 from rag.grounding import check_answer, match_citation
 from rag.loader import load_sources
 from rag.prompts import NOTICE, REFUSAL, build_messages, select_context
-from rag.retriever import RetrievedChunk, retrieve_with_trace
+from rag.retriever import RetrievalTrace, RetrievedChunk, retrieve_with_trace
 
 Chat = Callable[[Sequence[Message]], str]
 
@@ -87,13 +87,17 @@ def answer(
     *,
     debug: bool = False,
     chat: Chat = _default_chat,
+    trace: RetrievalTrace | None = None,
 ) -> AskResult:
-    """질문에 근거 기반 답변을 만든다. 검색 결과가 없으면 LLM을 부르지 않고 거절한다."""
+    """질문에 근거 기반 답변을 만든다. 검색 결과가 없으면 LLM을 부르지 않고 거절한다.
+
+    `trace`를 주면 검색을 건너뛴다(평가에서 예산 추정용으로 먼저 검색한 결과 재사용).
+    """
     cfg = cfg or get_preset(SERVICE_RETRIEVAL_PRESET)
     start = time.perf_counter()
     before = tracker.snapshot()
 
-    trace = retrieve_with_trace(question, cfg)
+    trace = trace or retrieve_with_trace(question, cfg)
     retrieval_ms = (time.perf_counter() - start) * 1000
     context = select_context(trace.results)
     if context:
