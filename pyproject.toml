@@ -31,6 +31,7 @@ packages = ["common", "app", "rag", "eval"]
 
 [dependency-groups]
 dev = [
+    "matplotlib>=3.11.2",
     "pytest>=9.1.1",
     "respx>=0.23.1",
     "ruff>=0.16.10",

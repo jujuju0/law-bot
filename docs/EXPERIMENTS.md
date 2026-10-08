@@ -39,7 +39,9 @@
 | E0 | 1.00 | 0.00 | 0.50 | 1.00 | 0.67 | 1.00 | 0.33 |
 | E1 | 0.75 | 0.25 | 0.17 | 1.00 | 1.00 | 1.00 | 0.67 |
 | E2 | 0.75 | 0.25 | 0.17 | 1.00 | 1.00 | 1.00 | 0.67 |
+| E3 | 0.50 | 0.25 | 0.17 | 1.00 | 1.00 | 1.00 | 0.67 |
 
+> 표·히트맵 재생성: `uv run python -m eval.report --chart` → `eval/results/ablation.md`, `eval/results/ablation_by_type.png` (config별 최신 결과 사용).
 > dev 33문항 중 거절 4문항 제외 29문항(definition 4, article_lookup 4, colloquial 6, obligation 4, cross_ref 3, delegation 5, annex 3). 1문항 = 유형 내 0.17~0.33 차이이므로 유형별 수치는 방향만 본다.
 > Cand-R@20 = 1단계 후보(candidate_k=20) 안에 든 gold 비율. *E0는 50청크 중 20개(법률 전체의 40%)가 후보라 의미가 약함.
 > p50 지연은 질의 임베딩을 배치로 미리 캐시한 뒤 측정한 값(Qdrant 검색만). 실제 서비스 지연은 Phase 5에서 별도 측정.

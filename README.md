@@ -1,248 +1,92 @@
 # 로봇 (Law-bot)
 
-**AI 기본법을 조문 근거와 함께 답해주는 RAG 챗봇**
+**AI 기본법을 조문 근거와 함께 답해주는 RAG QA 백엔드** — `POST /ask`
 
----
+「인공지능 발전과 신뢰 기반 조성 등에 관한 기본법」(법률)·시행령·별표·고시를 국가법령정보 공동활용 Open API로 수집해,
+질문에 **검색된 조문 안에서만** 답하고 모든 주장에 `[법 제31조 제2항]`, `[영 별표 2]` 같은 인용을 단다.
+목표는 기법을 많이 쓰는 것이 아니라 **어떤 기법이 검색을 실제로 개선했는지 수치로 보이는 것**이다.
 
-# UV 가상환경 설정 가이드
+- 설계: [`docs/DESIGN.md`](docs/DESIGN.md) · 진행: [`docs/TASKS.md`](docs/TASKS.md) · 실험: [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md) · 위임 그래프: [`docs/delegation_graph.md`](docs/delegation_graph.md)
+- 개발 환경(uv) 상세: [`docs/UV_SETUP.md`](docs/UV_SETUP.md)
 
-`notebook/`과 `app/`이 하나의 Python 가상환경을 공유하도록 구성한다.
+## 실행
 
-## 1. 프로젝트 구조
-
-```text
-rag_minipjt/
-│
-├── .venv/
-├── .env
-├── .python-version
-├── pyproject.toml
-├── uv.lock
-│
-├── notebook/
-│   └── test.ipynb
-│
-└── app/
-    └── main.py
-```
-
-핵심은 다음과 같다.
-
-- `.venv` : Python 가상환경
-- `pyproject.toml` : 사용할 패키지 정의
-- `uv.lock` : 실제 설치된 패키지 버전 고정
-- `notebook/` : 실험 및 검증 코드
-- `app/` : 실제 애플리케이션 코드
-
----
-
-## 2. 프로젝트 초기화
-
-프로젝트 루트에서 실행한다.
-
-```bash
-uv init --bare --python 3.12
-```
-
----
-
-## 3. 가상환경 생성
-
-```bash
-uv venv
-```
-
-가상환경은 프로젝트 루트의 `.venv/`에 생성된다.
-
-필요한 경우 활성화한다.
-
-```bash
-source .venv/bin/activate
-```
-
----
-
-## 4. 필요한 패키지 설치
-
-Qdrant, OpenAI Embedding, Notebook, FastAPI를 한 번에 설치한다.
-
-```bash
-uv add   openai   qdrant-client   python-dotenv   jupyter   ipykernel   fastapi   "uvicorn[standard]"
-```
-
-패키지를 설치하면 다음 파일이 자동으로 관리된다.
-
-```text
-pyproject.toml
-uv.lock
-```
-
----
-
-## 5. 환경 복원
-
-다른 PC 또는 수강생 환경에서는 다음 명령만 실행하면 동일한 환경을 만들 수 있다.
+`.env.example`을 복사해 `.env`를 만들고 `LLM_API_KEY`, `LLM_BASE_URL`, `LAW_OC`, `CREDIT_PER_1K_*`를 채운다.
 
 ```bash
 uv sync
+docker compose -f docker-qdrant/docker-compose.yaml up -d      # Qdrant :6333/dashboard
+
+uv run python -m rag.loader --refresh          # (필요할 때만) Open API 수집 → data/raw/
+uv run python -m rag.chunker --dry-run         # 청킹 → data/processed/chunks.jsonl, delegation_graph.json
+uv run python -m rag.vectorstore --rebuild     # 임베딩·Qdrant 적재 (임베딩 캐시 사용)
+
+uv run uvicorn app.main:app --reload           # API :8000/docs
+uv run pytest -q
 ```
-
-`uv.lock`에 기록된 버전을 기준으로 패키지가 설치된다.
-
----
-
-## 6. Notebook 실행
 
 ```bash
-uv run jupyter lab
+curl -s -X POST localhost:8000/ask -H "Content-Type: application/json" \
+  -d '{"question":"국내대리인을 지정하지 않으면 과태료가 얼마인가요?","debug":true}'
 ```
 
-VS Code에서 `.ipynb`를 사용할 경우 `.venv`의 Python을 Kernel로 선택한다.
+응답: `answer`, `sources[]`(`article`, `source_type`, `citation`, `content`, `score`, `cited`, `added_by`), `notice`(AI 생성 표시), `grounded`, `data_snapshot`, `debug`(후보·단계별 점수·warnings·토큰).
+`GET /health`: Qdrant 연결, 원천별 포인트 수, 서비스 프리셋, 데이터 수집 일자.
 
-필요하면 Kernel을 등록한다.
+### 평가
 
 ```bash
-uv run python -m ipykernel install --user --name rag-minipjt   --display-name "rag-minipjt"
+uv run python -m eval.evaluate --config E3_hybrid,E9_delegation   # 검색 지표 (dev)
+uv run python -m eval.evaluate --config full --answer             # 답변+judge (실행 전 예상 크레딧 확인)
+uv run python -m eval.report --chart --mermaid                    # ablation 표·히트맵·위임 그래프
+uv run python -m common.usage --summary                           # 누적 토큰·크레딧, 잔여 예산
 ```
 
----
+## 데이터 원천 (snapshot 2026-10-08, `data/sources.yaml`)
 
-## 7. FastAPI 실행
+| source_type | 내용 | 청크 |
+|---|---|---|
+| `law` | 인공지능기본법 (MST 282791, 법률 제21311호) | 108 |
+| `decree` | 같은 법 시행령 (MST 288781, 대통령령 제36580호) | 87 |
+| `annex` | 시행령 별표 1(이행조치 인정 기준), 별표 2(과태료 부과기준) — 시행령 본문의 고정폭 표를 파싱, 행 단위 청크 | 26 |
+| `admrul` | 인공지능제품ㆍ서비스 확인 절차 운영에 관한 고시 (과기정통부) | 9 |
+| `term` | 법령용어 (인공지능기본법 정의어) | 6 |
 
-예를 들어 `app/main.py`를 다음과 같이 작성한다.
+API 원문은 `data/raw/`에 캐시하고 파이프라인은 캐시를 읽는다. 서비스는 런타임에 law.go.kr을 호출하지 않는다.
 
-```python
-from fastapi import FastAPI
+## 아키텍처
 
-app = FastAPI()
-
-
-@app.get("/")
-def root():
-    return {
-        "message": "RAG API"
-    }
+```
+Offline  law_api(캐시) → loader → chunker(조/항/호, 별표 행, 위임 그래프) → vectorstore(Qdrant, dense)
+Online   질의 준비(term expansion / multi-query)
+         → dense + BM25(kiwi) → RRF → rerank(CrossEncoder) → priority boost → small-to-big → top_k
+         → router(제N조·별표 N 고정) → ref expansion → delegation expansion(법 → 영 → 별표)
+         → 근거 컨텍스트(6k 토큰) → LLM → 인용·숫자 후검증 → 응답
 ```
 
-실행:
+- 모든 기법은 `rag/config.py`의 `RetrievalConfig` 플래그로 켜고 끈다. 프리셋 E0~E10이 "직전 + 플래그 1개"로 쌓여 ablation이 된다.
+- **위임 확장**: 법률 조문의 "대통령령으로 정한다"를 시행령 조·별표로 연결한 그래프(`delegation_graph.json`, 위임 간선 57개)를 따라 하위 법령 근거를 붙인다. 예: 법 제43조(과태료) → 영 제32조 → 영 별표 2(금액표).
+- **후검증**(`rag/grounding.py`): 검색 결과에 없는 인용은 제거하고 warnings에 남긴다. 답변의 금액·기간이 근거 텍스트에 없으면 경고한다(`3천만원`=`3,000만원`, 별표 `(단위: 만원)` 해석).
+- **비용**: LLM 호출은 `common/cache.py`(sqlite) 캐시, 임베딩은 `rag/embeddings.py` 캐시를 거친다. 사용량은 `eval/usage_ledger.jsonl`에 누적.
 
-```bash
-uv run uvicorn app.main:app --reload
-```
+## 결과 (dev 33문항, 거절 4문항 제외 29문항)
 
-브라우저:
+| 실험 | 설정 | Hit@1 | Hit@3 | Hit@5 | MRR | Cand-R@20 |
+|---|---|---|---|---|---|---|
+| E0 | naive 500자 + dense | 0.517 | 0.655 | 0.724 | 0.590 | (0.621) |
+| E1 | 구조 청킹 + dense | 0.586 | 0.655 | 0.690 | 0.629 | 0.586 |
+| E2 | + contextual header | 0.552 | 0.655 | 0.655 | 0.586 | 0.517 |
+| E3 | + BM25 + RRF | 0.483 | 0.621 | 0.690 | 0.563 | 0.603 |
+| E4~E10 | rerank, router, 질의 확장, ref/delegation 확장, 원천 추가 | 구현 완료, 평가 예정 | | | | |
 
-```text
-http://localhost:8000
-```
+![유형별 Hit@3](eval/results/ablation_by_type.png)
 
-API 문서:
+해석과 채택/기각 사유는 [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md). 1문항 = 0.034이므로 1~2문항 차이는 노이즈로 본다.
 
-```text
-http://localhost:8000/docs
-```
+## 한계
 
----
-
-## 8. 패키지 추가
-
-새로운 패키지가 필요하면 다음처럼 추가한다.
-
-```bash
-uv add 패키지명
-```
-
-예:
-
-```bash
-uv add langchain langchain-openai langchain-qdrant
-```
-
----
-
-## 9. Git 관리
-
-`.gitignore`에는 다음 항목을 넣는다.
-
-```gitignore
-.venv/
-.env
-__pycache__/
-.ipynb_checkpoints/
-```
-
-다음 파일은 Git에 포함한다.
-
-```text
-pyproject.toml
-uv.lock
-.python-version
-```
-
----
-
-## 핵심 정리
-
-```text
-프로젝트 루트
-     │
-     ├── pyproject.toml
-     ├── uv.lock
-     └── .venv
-           │
-      ┌────┴────┐
-      │         │
- notebook/    app/
-```
-
-`notebook/`과 `app/`에 각각 별도의 가상환경을 만들지 않고  
-**프로젝트 전체에서 하나의 `.venv`를 공유하는 방식이 가장 단순하다.**
-
----
-
-## 10. common/ 공유 모듈 설정
-
-`notebook/`과 `app/`에서 공통으로 쓰는 설정, Qdrant 클라이언트, 임베딩 로직은 `common/` 패키지로 분리한다.
-
-```text
-rag_minipjt/
-└── common/
-    ├── __init__.py
-    ├── config.py      # 환경변수 로딩
-    ├── qdrant.py       # Qdrant client 생성
-    └── ai_model.py    # LLM / Embedding 모델 생성
-```
-
-`notebook/`은 프로젝트 루트가 아닌 `notebook/` 디렉토리에서 커널이 실행되기 때문에, `common`을 그냥 `.venv`에 패키지로 설치해두지 않으면 노트북에서 다음과 같은 오류가 발생한다.
-
-```text
-ModuleNotFoundError: No module named 'common'
-```
-
-이를 해결하기 위해 프로젝트 자체를 editable 패키지로 설치한다. `pyproject.toml`에 build-system을 추가한다.
-
-```toml
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["common", "app"]
-```
-
-그리고 `common/__init__.py`, `app/__init__.py`를 빈 파일로 만들어 패키지로 인식시킨다.
-
-```bash
-uv sync
-```
-
-`uv sync`를 실행하면 `rag-minipjt` 프로젝트 자체가 `.venv`에 editable 모드로 설치되어, 노트북이 어느 위치에서 실행되든 다음처럼 공통 모듈을 바로 사용할 수 있다.
-
-```python
-import os
-from dotenv import load_dotenv
-from common.ai_model import get_llm_model, get_embedding_model
-from common.qdrant import get_qdrant_client
-```
-
-> `common/`의 코드를 수정한 뒤에는 커널만 재시작하면 되고, `uv sync`를 다시 실행할 필요는 없다 (editable 설치이므로 소스 변경이 즉시 반영된다).
+- 법령해석례(`expc`)는 `query=인공지능` 결과가 0건(2026-10-08)이라 수집하지 않았다.
+- 골든셋은 45문항(dev 33 / test 12)으로 작아 유형별 수치는 방향만 본다. 튜닝은 dev에서만, test는 최종 1회.
+- Term expansion 사전(`data/term_synonyms.yaml`)은 수작업이다. 일반 표현으로 작성했지만 사전 품질이 성능을 좌우한다.
+- 데이터는 수집 시점(snapshot) 기준이다. 법령이 개정되면 `sources.yaml`의 MST를 갱신하고 재수집·재적재해야 한다.
+- 답변은 법률 자문이 아니다(`notice` 필드로 표시).

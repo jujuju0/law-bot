@@ -91,9 +91,9 @@
 ## Phase 6. 최종 평가 & 발표 (1일)
 - [ ] T6.1 test split으로 최종 평가 (retrieval + answer judge) — 실행 전 `common.usage --summary`로 잔여 예산 확인
 - [ ] T6.1b 비용 결과 정리: 기법별 토큰·크레딧, 캐시 절감량 (발표 자료용)
-- [ ] T6.2 Ablation 표, 유형별 개선 그래프, 위임 그래프 시각화
+- [ ] T6.2 Ablation 표, 유형별 개선 그래프, 위임 그래프 시각화 — 생성기 완료(2026-10-08, `eval/report.py`: `ablation.md`·히트맵 PNG·`docs/delegation_graph.md` Mermaid). E4~E10 결과 나오면 재생성
 - [ ] T6.3 Before/After 데모 3개 (구조 청킹 / Hybrid / Delegation expansion)
-- [ ] T6.4 README (실행 방법, 데이터 원천·snapshot, 아키텍처, 결과, 한계)
+- [ ] T6.4 README (실행 방법, 데이터 원천·snapshot, 아키텍처, 결과, 한계) — 초안 완료(2026-10-08, 결과는 E0~E3만). 최종 결과로 결과 표 갱신
 
 ---
 
@@ -123,6 +123,7 @@
    범위 밖인데 LLM이 거절하지 않으면 `rag/prompts.py` 규칙 7 강화 또는 검색 점수 임계값 도입 검토(E3 결과의 `refusal_top1_scores` 참고)
 10. **T4.4** `@grounding-reviewer` 에이전트로 dev 10문항 점검
 11. **T5.3** `/api-smoke` — `SERVICE_RETRIEVAL_PRESET`(기본 `full`)으로 서버 기동, 유형별 7문항
+13. **T6** test split 최종 평가(`--split test`, 사용자 명시 요청 시만) → `uv run python -m eval.report --chart` 재생성 → README 결과 표 갱신
 12. **T3.9 답변 평가** (크레딧 사용 — 실행 전 사용자 승인):
     - `.env`에 `JUDGE_MODEL` 확정(실험 중 변경 금지 → EXPERIMENTS.md 상단에 기록), `CREDIT_PER_1K_*` 단가 기록
     - `uv run python -m common.usage --summary`로 잔여 확인
