@@ -82,9 +82,9 @@
 **DoD:** delegation·annex·out_of_scope 문항 올바르게 처리, 숫자 불일치 warnings 0
 
 ## Phase 5. API (0.5일)
-- [ ] T5.1 `app/main.py`: `POST /ask`, `GET /health`, lifespan 로딩, Pydantic 스키마 (`source_type`, `citation`, `data_snapshot`)
-- [ ] T5.2 `debug` 옵션 (후보·단계별 점수·added_by·warnings)
-- [ ] T5.3 `tests/test_api.py`, 스모크 (/api-smoke)
+- [x] T5.1 `app/main.py`: `POST /ask`, `GET /health`, lifespan 로딩, Pydantic 스키마 (`source_type`, `citation`, `data_snapshot`) (2026-10-08, `app/schemas.py`. 백엔드 오류는 503, Qdrant 미연결 시 /health `degraded`. 클라우드에서 기동·/health 확인)
+- [x] T5.2 `debug` 옵션 (후보·단계별 점수·added_by·warnings) (2026-10-08, + queries·via·latency·usage·예산 초과로 뺀 근거)
+- [ ] T5.3 `tests/test_api.py`, 스모크 (/api-smoke) — 테스트 완료(2026-10-08). `/api-smoke` 실서버 스모크 로컬 대기
 
 **DoD:** `/docs`에서 RFP 예시 질문 정상 응답, 테스트 통과
 
@@ -122,6 +122,7 @@
    위임(q030·q032)·별표(q037·q038)·범위 밖(q041·q044) 각 1~2개. 확인 포인트: 별표 금액이 표와 일치, warnings 0, 범위 밖은 거절 문구 그대로.
    범위 밖인데 LLM이 거절하지 않으면 `rag/prompts.py` 규칙 7 강화 또는 검색 점수 임계값 도입 검토(E3 결과의 `refusal_top1_scores` 참고)
 10. **T4.4** `@grounding-reviewer` 에이전트로 dev 10문항 점검
+11. **T5.3** `/api-smoke` — `SERVICE_RETRIEVAL_PRESET`(기본 `full`)으로 서버 기동, 유형별 7문항
 
 ---
 
