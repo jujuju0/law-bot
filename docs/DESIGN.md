@@ -190,27 +190,34 @@ class RetrievalConfig:
     n_queries: int = 3
     use_term_expansion: bool = False        # 법령용어 사전으로 질의 확장
     use_rerank: bool = False
-    reranker: str = "BAAI/bge-reranker-v2-m3"
+    rerank_field: str = "embed_text"        # embed_text | parent_text | text (모델은 RERANKER_MODEL 설정)
     use_ref_expansion: bool = False         # 같은 법 내 참조 조문
     use_delegation_expansion: bool = False  # 법률 ↔ 시행령 ↔ 별표/고시
     max_expansion: int = 3
+    expansion_seed_k: int = 3
     priority_boost: float = 0.0             # 동점 근처에서 법률·시행령 우선
-    small_to_big: bool = True
+    small_to_big: bool = False              # 기본 False(이전 실험 재현성), E7_small_to_big에서 켬
 ```
+실제 정의는 `rag/config.py`(프리셋 E0~E10, `full` 포함).
 
 ### 4.2 단계
 | 단계 | 구현 | 노트 |
 |---|---|---|
 | Router | `rag/router.py`: `(법\|시행령\|영)? (제)?N조(의M)?`, `별표 N` → 조 키 → `rag/chunk_store.py`(chunks.jsonl 인메모리)에서 조 청크 조회, 결과 맨 앞 고정(총 top_k 유지, 이미 있으면 앞으로 이동) | 접두어 없으면 질문에 "시행령"이 있을 때 decree. `cfg.sources` 밖의 조는 무시. 조 안의 대표 청크는 질문 BM25 점수 최고 |
-| Term expansion | 질문에 법령용어 사전의 동의어·일상어가 있으면 정식 용어를 덧붙임 | Multi-Query보다 싸고 결정적 |
+| Term expansion | `data/term_synonyms.yaml`(정식 용어 → 일상 별칭) 별칭이 질문에 있고 정식 용어가 없으면 검색 질의 뒤에 덧붙임 (`rag/query_expansion.py`) | Multi-Query보다 싸고 결정적. rerank·router는 원 질문 사용 |
 | Dense | Qdrant `query_points(filter=source_type in cfg.sources)` | |
 | BM25 | kiwipiepy 형태소 + rank_bm25 (`chunks.jsonl` 기반) | |
 | RRF | `Σ 1/(k+rank)` | |
-| Multi-Query | LLM이 법률 용어로 3개 재작성 | 일상어 질문 |
+| Multi-Query | LLM이 법률 용어로 `n_queries=3`개 재작성(JSON 배열, `max_tokens=200`, `common.cache.cached_chat` 경유). 원 질문 포함 질의마다 dense(+BM25) 순위 → 전부 RRF | 일상어 질문. 평가에선 질의 준비 시간을 `query_prep_ms`로 따로 기록 |
 | Rerank | CrossEncoder(`RERANKER_MODEL`, 기본 bge-reranker-v2-m3), 입력 `(질문, rerank_field)` — `embed_text`(E4) / `parent_text`(E4_rerank_parent), `max_length=512`, 1단계 후보 `candidate_k=20`개 재정렬 | `rag/reranker.py`, 후보 재현율은 rerank 전 기준 |
-| Ref expansion | 상위 청크 `refs` (같은 법 내) | 과태료↔의무 |
-| **Delegation expansion** | 상위 청크가 `delegated`면 `delegates_to` 청크 추가, 시행령 청크면 `delegated_from` 법률 조 추가 | "세부 기준은?" 질문 |
-| Small-to-Big | 같은 조 청크 병합, `parent_text` 사용 | |
+| Priority boost | 순위 점수 `1/(rrf_k+rank)`에 priority 1 `+boost`, 2 `+boost/2` 후 재정렬 (E10_aux_boost: 0.002 ≈ 수 계단) | 보조 원천이 법령을 밀어낼 때 |
+| Small-to-Big | 같은 조(`article_key`) 청크를 최고 순위 1개로 합침 → top_k에 서로 다른 조가 들어옴. 2개 이상 합쳐진 법률·시행령 조는 본문을 `parent_text`(조 전체)로 | |
+| Ref expansion | 상위 `expansion_seed_k=3`개의 `refs` 중 **같은 원천** 조를 최대 `max_expansion=3`개 결과 **뒤에** 추가 (`added_by="ref"`, 점수 = 최저점×0.9, `via`=출발 조) | 과태료↔의무 |
+| **Delegation expansion** | 시드의 `delegates_to` + `delegated_from` + `refs`의 `annex:*` → 최대 3개 뒤에 추가. 추가된 청크도 시드가 되어 **위임 체인**(법 제43조 → 영 제32조 → 별표 2)을 따라감. `cfg.sources` 밖은 제외 | "세부 기준은?" 질문 |
+
+- 실행 순서: 질의 준비 → dense(+BM25 → RRF) → rerank → priority boost → small-to-big → 상위 top_k → router(맨 앞 고정) → ref → delegation(뒤에 덧붙임).
+- 확장 청크의 대표 청크(조 안의 어느 항·행인지)는 질문과의 BM25 점수 최고 청크. 조 단위 조회는 `rag/chunk_store.py`(chunks.jsonl 인메모리, Qdrant payload와 동일).
+- 확장은 결과를 `top_k`보다 길게 만들므로 @k 지표에는 반영되지 않는다 → 평가는 전체 결과 기준 `recall@ctx`·`full_recall@ctx`를 함께 본다. 개수 효과를 통제하려고 `E8_sources_k8`(top_k=8) 대조군을 둔다.
 
 ### 4.3 retriever.py 인터페이스
 ```python
@@ -364,8 +371,8 @@ E0~E10 전부 답변 평가 시 약 350만 토큰 → 하지 않는다. 검색 �
 ### 9.3 캐시
 | 캐시 | 위치 | 키 | 규칙 |
 |---|---|---|---|
-| 임베딩 | `data/cache/embeddings.sqlite` | `sha256(embedding_model + embed_text)` | 재적재 시 바뀐 청크만 API 호출. 쿼리 임베딩도 캐시 |
-| LLM 응답 | `data/cache/llm.sqlite` | `sha256(model + temperature + max_tokens + messages)` | temperature 0 호출만 캐시. 답변 생성·Multi-Query·judge 공통. `--no-cache`로 우회 |
+| 임베딩 | `data/processed/embedding_cache/{model}.jsonl` (`rag/embeddings.py`) | `sha256(embedding_model + text)` | 재적재 시 바뀐 청크만 API 호출. 쿼리 임베딩도 캐시 |
+| LLM 응답 | `data/cache/llm.sqlite` (`common/cache.py` `cached_chat`) | `sha256(model + temperature + max_tokens + messages)` | temperature 0(또는 미지정) 호출만 캐시. 답변 생성·Multi-Query·judge 공통. `use_cache=False`로 우회 |
 | Open API 원문 | `data/raw/` | 문서 ID | §2.3 |
 - 같은 config·프롬프트로 평가를 다시 돌리면 LLM 비용 0
 - 프롬프트를 바꾸면 키가 바뀌어 자연히 재호출 (의도된 동작)

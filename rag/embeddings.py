@@ -11,6 +11,7 @@ from pathlib import Path
 
 from common.ai_model import get_embedding_model
 from common.config import EMBEDDING_MODEL, PROCESSED_DIR
+from common.usage import count_tokens, tracker
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,7 @@ class EmbeddingCache:
             embedder = get_embedding_model()
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as f:
+                tracker.add_embed(sum(count_tokens(t) for t in missing))
                 for i in range(0, len(missing), BATCH_SIZE):
                     batch = missing[i : i + BATCH_SIZE]
                     for text, vec in zip(

@@ -21,6 +21,7 @@ from common.config import (
     PROCESSED_DIR,
 )
 from common.qdrant import get_qdrant_client
+from common.usage import record, tracker
 from rag.chunker import Chunk, chunk_documents, load_chunks, naive_chunks, write_outputs
 from rag.embeddings import EmbeddingCache, get_embedding_cache
 from rag.loader import SOURCE_TYPES, load_documents
@@ -142,9 +143,11 @@ def main() -> None:
         chunks = [c for c in load_chunks(path) if c.source_type in sources]
         collection = args.collection or COLLECTION_NAME
 
+    before = tracker.snapshot()
     n = upsert_chunks(
         chunks, collection, rebuild=args.rebuild, embed_field=args.embed_field
     )
+    record("reindex", collection, tracker.snapshot() - before)
     expected = Counter(c.source_type for c in chunks)
     actual = count_by_source(collection, expected)
     print(f"{collection}: 적재 {n}건, 원천별 {actual}")

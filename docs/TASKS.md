@@ -64,11 +64,11 @@
 - [x] T3.1 BM25(kiwi) + RRF → E3 (2026-10-08, 채택: Cand-R@20 +0.086)
 - [ ] T3.2 Reranker → E4 (CPU 지연 측정) — 코드·단위테스트 완료(2026-10-08, `rag/reranker.py`, 프리셋 `E4_rerank`·`E4_rerank_parent`). **로컬에서 평가 실행·기록 남음** (클라우드 세션은 API 키·Qdrant·HF 모델 다운로드 불가)
 - [ ] T3.3 Router (법/시행령/별표 번호) → E5 — 코드·테스트 완료(2026-10-08, `rag/router.py`, `rag/chunk_store.py`, 프리셋 `E5_router`). 평가 로컬 대기
-- [ ] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교)
-- [ ] T3.5 Ref expansion + Small-to-Big → E7
-- [ ] T3.6 원천 추가만 (law+decree+annex) → E8
-- [ ] T3.7 **Delegation expansion** → E9
-- [ ] T3.8 보조 원천 (admrul, term, expc) → E10, priority_boost 조정
+- [ ] T3.4 Multi-Query vs Term expansion → E6 (둘 다 해보고 비용 대비 효과 비교) — 코드·테스트 완료(2026-10-08, `rag/query_expansion.py`, `data/term_synonyms.yaml`, `common/cache.py`·`common/usage.py` 신설, 프리셋 `E6_term`·`E6_multi_query`). 평가 로컬 대기
+- [ ] T3.5 Ref expansion + Small-to-Big → E7 — 코드·테스트 완료(2026-10-08, 프리셋 `E7_ref`·`E7_small_to_big`). 평가 로컬 대기
+- [ ] T3.6 원천 추가만 (law+decree+annex) → E8 — 프리셋 `E8_sources` + 대조군 `E8_sources_k8`(top_k=8, E9와 결과 개수 맞춤). 평가 로컬 대기
+- [ ] T3.7 **Delegation expansion** → E9 — 코드·테스트 완료(2026-10-08, 위임 체인 법→영→별표 추적, 프리셋 `E9_delegation`). 평가 로컬 대기
+- [ ] T3.8 보조 원천 (admrul, term, expc) → E10, priority_boost 조정 — 프리셋 `E10_aux`(admrul·term, expc 미수집) / `E10_aux_boost`(0.002). 평가 로컬 대기
 - [ ] T3.9 서비스 프리셋 확정 (`configs.py`) — 검색 지표로 후보 3~4개로 좁힌 뒤 **그 후보만** 답변 평가(`--answer`)
 
 **DoD:** 기법별 채택/기각 사유가 수치와 함께 EXPERIMENTS.md에 있음, E8 vs E9 비교 완료
@@ -106,6 +106,15 @@
    - `RUN_RERANK_MODEL=1 uv run pytest -q tests/test_retriever.py`
    - CPU p50 지연을 E3(5ms)와 비교. `embed_text` vs `parent_text` 중 나은 쪽 채택. **기각 시** `rag/config.py`의 E5 이후 프리셋 기반을 `E4`→`E3`로 바꿀 것
 3. **T3.3 E5** `uv run python -m eval.evaluate --config E5_router` — article_lookup(q007·q009) Hit@1 확인. q008·q011은 시행령이라 sources=law에선 구조적 불가(→E8)
+4. **T3.4 E6** 먼저 `.env`에 `CREDIT_PER_1K_INPUT/OUTPUT/EMBED` 단가 기록 → `uv run python -m common.usage --summary`
+   - `uv run python -m eval.evaluate --config E6_term` (LLM 없음)
+   - `uv run python -m eval.evaluate --config E6_multi_query --limit 5`로 비용 확인 후 전체 dev(33문항 × LLM 1회, max_tokens 200, 이후 캐시)
+   - 결과 JSON의 `usage`·`p50_query_prep_ms`로 비용·지연 비교 → 채택안을 `rag/config.py`의 `E6 = ...`에 반영
+   - Term 사전(`data/term_synonyms.yaml`)은 dev 문항을 보고 고친 게 아니라 일반 표현으로 작성함. 사전 수정 시 test split에서도 효과 확인 필요
+5. **T3.5 E7** `--config E7_ref,E7_small_to_big` — cross_ref 유형의 `full_recall@ctx`, small-to-big의 Hit@5(조 중복 제거 효과) 확인 → `E7 = ...` 결정
+6. **T3.6~T3.7 E8·E9** `--config E8_sources,E8_sources_k8,E9_delegation` — **발표 하이라이트**: delegation·annex 유형의 `full_recall@ctx`를 E8(5개) / E8_k8(8개, 개수 통제) / E9로 비교
+7. **T3.8 E10** `--config E10_aux,E10_aux_boost` — definition(term gold)·q035(admrul gold)와 노이즈 비교, priority_boost 채택 여부
+8. **T3.9** 위 결과로 `rag/config.py`의 `full` 프리셋 확정(현재 잠정 = E10_aux)
 
 ---
 

@@ -86,8 +86,12 @@ def test_rerank_empty() -> None:
 
 def test_retrieve_with_trace_reranks_candidates(monkeypatch) -> None:
     scorer = KeywordScorer("투명성")
-    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: list(CANDIDATES))
-    monkeypatch.setattr(retriever, "_bm25", lambda q, cfg, limit: list(CANDIDATES))
+    monkeypatch.setattr(
+        retriever, "_dense", lambda q, cfg, limit, stage="dense": list(CANDIDATES)
+    )
+    monkeypatch.setattr(
+        retriever, "_bm25", lambda q, cfg, limit, stage="dense": list(CANDIDATES)
+    )
     monkeypatch.setattr(retriever, "get_cross_encoder", lambda **_: scorer)
 
     cfg = replace(get_preset("E4_rerank"), top_k=2)
@@ -140,7 +144,9 @@ def test_parse_article_refs(question: str, keys: list[str]) -> None:
 
 
 def test_router_pins_article_first(monkeypatch) -> None:
-    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: list(CANDIDATES))
+    monkeypatch.setattr(
+        retriever, "_dense", lambda q, cfg, limit, stage="dense": list(CANDIDATES)
+    )
     cfg = replace(get_preset("E2_header"), use_router=True, top_k=3)
     out = retrieve_with_trace("인공지능기본법 28조를 요약해 주세요.", cfg).results
     assert len(out) == 3
@@ -151,7 +157,9 @@ def test_router_pins_article_first(monkeypatch) -> None:
 
 
 def test_router_respects_sources(monkeypatch) -> None:
-    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: list(CANDIDATES))
+    monkeypatch.setattr(
+        retriever, "_dense", lambda q, cfg, limit, stage="dense": list(CANDIDATES)
+    )
     law_only = replace(get_preset("E2_header"), use_router=True)
     out = retrieve_with_trace("시행령 25조 내용 알려줘", law_only).results
     assert all(c.added_by == "search" for c in out)
@@ -164,9 +172,111 @@ def test_router_respects_sources(monkeypatch) -> None:
 def test_router_moves_existing_hit_to_front(monkeypatch) -> None:
     found = chunk("x", "본문", 0.5)
     found.article_key = "law:a28"
-    monkeypatch.setattr(retriever, "_dense", lambda q, cfg, limit: [*CANDIDATES, found])
+    monkeypatch.setattr(
+        retriever, "_dense", lambda q, cfg, limit, stage="dense": [*CANDIDATES, found]
+    )
     cfg = replace(get_preset("E2_header"), use_router=True)
     out = retrieve_with_trace("법 제28조는?", cfg).results
     assert out[0].chunk_id == "x"
     assert out[0].added_by == "search"
     assert len({c.chunk_id for c in out}) == len(out)
+
+
+# ---------------------------------------------------------------------------
+# 질의 준비·확장 단계 (T3.4·T3.5·T3.7·T3.8) — 실제 chunks.jsonl payload 사용
+# ---------------------------------------------------------------------------
+def store_chunk(chunk_id: str, score: float = 0.5) -> RetrievedChunk:
+    from rag.chunk_store import get_chunk_store
+
+    return RetrievedChunk.from_payload(
+        get_chunk_store().by_id[chunk_id], score, "dense"
+    )
+
+
+def test_prepare_queries_term_and_multi_query(monkeypatch) -> None:
+    monkeypatch.setattr(
+        retriever, "multi_queries", lambda q, n: ["국내대리인 지정 의무", "질문"][:n]
+    )
+    base = get_preset("E5_router")
+    assert retriever.prepare_queries("질문", base) == ["질문"]
+    term = replace(base, use_term_expansion=True)
+    assert retriever.prepare_queries("해외 회사인데 뭐 해야 해?", term) == [
+        "해외 회사인데 뭐 해야 해? 국내대리인"
+    ]
+    mq = replace(base, use_multi_query=True, n_queries=2)
+    assert retriever.prepare_queries("질문", mq) == ["질문", "국내대리인 지정 의무"]
+
+
+def test_multi_query_fuses_rankings(monkeypatch) -> None:
+    rankings = {
+        "q0": [CANDIDATES[0], CANDIDATES[1]],
+        "q1": [CANDIDATES[2], CANDIDATES[1]],
+    }
+    monkeypatch.setattr(
+        retriever,
+        "_dense",
+        lambda q, cfg, limit, stage="dense": [
+            replace(c, stage_scores={stage: c.score}) for c in rankings[q]
+        ],
+    )
+    cfg = replace(get_preset("E2_header"), top_k=3)
+    trace = retrieve_with_trace("질문", cfg, queries=["q0", "q1"])
+    assert trace.queries == ["q0", "q1"]
+    assert trace.results[0].chunk_id == "a12"  # 두 질의 모두에 등장
+    assert {"dense_rank", "dense@1_rank"} <= trace.results[0].stage_scores.keys()
+
+
+def test_small_to_big_merges_same_article() -> None:
+    ranked = [
+        store_chunk("law:a6-p2"),
+        store_chunk("law:a3"),
+        store_chunk("law:a6-p3"),
+    ]
+    out = retriever._small_to_big(ranked)
+    assert [c.chunk_id for c in out] == ["law:a6-p2", "law:a3"]
+    assert out[0].text == out[0].parent_text
+    assert out[0].stage_scores["merged"] == 2
+    assert out[1].text != "" and "merged" not in out[1].stage_scores
+
+
+def test_ref_expansion_adds_same_source_refs() -> None:
+    cfg = replace(get_preset("E2_header"), use_ref_expansion=True, max_expansion=2)
+    results = [store_chunk("law:a43", 0.9), store_chunk("law:a31", 0.8)]
+    out = retriever._expand("과태료", results, cfg, "ref")
+    added = out[len(results) :]
+    # law:a43 refs = a31(이미 있음), a36, a40 → 최대 2개
+    assert [c.article_key for c in added] == ["law:a36", "law:a40"]
+    assert all(c.added_by == "ref" and c.via == "law:a43" for c in added)
+    assert all(c.score < 0.8 for c in added)
+
+
+def test_delegation_expansion_follows_chain_and_sources() -> None:
+    cfg = replace(
+        get_preset("E2_header"),
+        sources=("law", "decree", "annex"),
+        use_delegation_expansion=True,
+    )
+    out = retriever._expand(
+        "국내대리인 미지정 과태료 금액", [store_chunk("law:a43")], cfg, "delegation"
+    )
+    assert [(c.article_key, c.via) for c in out[1:]] == [
+        ("decree:a32", "law:a43"),
+        ("annex:2", "decree:a32"),
+    ]
+    assert "국내대리인" in out[2].text  # 별표 행 중 질문과 맞는 행을 대표로
+
+    law_only = replace(cfg, sources=("law",))
+    out = retriever._expand("과태료", [store_chunk("law:a43")], law_only, "delegation")
+    assert len(out) == 1
+
+
+def test_priority_boost_prefers_law_over_term() -> None:
+    term = store_chunk("term:인공지능")
+    law = store_chunk("law:a2-i1")
+    cfg = replace(get_preset("E2_header"), priority_boost=0.002)
+    assert [c.chunk_id for c in retriever._priority_boost([term, law], cfg)] == [
+        "law:a2-i1",
+        "term:인공지능",
+    ]
+    no_boost = replace(cfg, priority_boost=0.0)
+    assert retriever._priority_boost([term, law], no_boost)[0] is term

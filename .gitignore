@@ -226,3 +226,5 @@ __marimo__/
 data/raw/
 # 임베딩 캐시 (수 MB, 재생성 가능)
 data/processed/embedding_cache/
+# LLM 응답 캐시 (sqlite, 재생성 가능)
+data/cache/

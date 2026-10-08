@@ -16,13 +16,21 @@
 | E1 | 구조 청킹 + dense | law | 0.586 | 0.655 | 0.690 | 0.048 | 0.629 | 0.586 | 4ms | 〃 | 채택(구조 청킹 유지) |
 | E2 | + contextual header | law | 0.552 | 0.655 | 0.655 | 0.095 | 0.586 | 0.517 | 4ms | 〃 | 유지(효과 미미, 이후 기반) |
 | E3 | + BM25(kiwi, 정의어 사전) + RRF(k=60) | law | 0.483 | 0.621 | 0.690 | 0.143 | 0.563 | 0.603 | 5ms | 〃 (BM25는 로컬) | 채택(1단계 후보 생성기) |
-| E4 | + Rerank | law | | | | | | | | | |
-| E5 | + Router | law | | | | | | | | | |
-| E6 | + Multi-Query / Term exp. | law | | | | | | | | | |
-| E7 | + Ref expansion | law | | | | | | | | | |
-| E8 | 원천 추가만 | law,decree,annex | | | | | | | | | |
-| E9 | + Delegation expansion | law,decree,annex | | | | | | | | | |
-| E10 | + 보조 원천 | + admrul,term,expc | | | | | | | | | |
+| E4 | + Rerank (embed_text) | law | | | | | | | | | 로컬 대기 |
+| E4p | + Rerank (parent_text) | law | | | | | | | | | 로컬 대기 |
+| E5 | + Router | law | | | | | | | | | 로컬 대기 |
+| E6t | + Term expansion | law | | | | | | | | | 로컬 대기 |
+| E6m | + Multi-Query | law | | | | | | | | | 로컬 대기 |
+| E7r | + Ref expansion | law | | | | | | | | | 로컬 대기 |
+| E7s | + Small-to-Big | law | | | | | | | | | 로컬 대기 |
+| E8 | 원천 추가만 | law,decree,annex | | | | | | | | | 로컬 대기 |
+| E8k | 원천 추가만, top_k=8 (개수 대조군) | law,decree,annex | | | | | | | | | 로컬 대기 |
+| E9 | + Delegation expansion | law,decree,annex | | | | | | | | | 로컬 대기 |
+| E10 | + 보조 원천 | + admrul,term (expc 미수집) | | | | | | | | | 로컬 대기 |
+| E10b | + priority_boost 0.002 | + admrul,term | | | | | | | | | 로컬 대기 |
+
+> E7 이후(확장)는 top_k 뒤에 청크를 덧붙이므로 결과 JSON의 `full_recall@ctx`·`avg_ctx_chunks`를 함께 기록한다.
+> 프리셋 이름: `E4_rerank`, `E4_rerank_parent`, `E5_router`, `E6_term`, `E6_multi_query`, `E7_ref`, `E7_small_to_big`, `E8_sources`, `E8_sources_k8`, `E9_delegation`, `E10_aux`, `E10_aux_boost` (`rag/config.py`). 실행 순서는 `docs/TASKS.md` "로컬 실행 대기".
 
 ## 유형별 Hit@3
 

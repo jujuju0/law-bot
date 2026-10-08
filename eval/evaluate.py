@@ -1,6 +1,9 @@
 """Golden Set 검색 평가 (DESIGN §7.3): Hit@1/3/5, Recall@5, Full-Recall@5, MRR, p50 지연, 유형별 집계.
 
-사용: uv run python -m eval.evaluate --config E0_naive,E1_structure,E2_header [--split dev]
+확장(ref/delegation)은 top_k 뒤에 청크를 덧붙이므로 @k 지표는 그대로 두고,
+LLM에 실제로 들어가는 전체 결과 기준 `recall@ctx`·`full_recall@ctx`를 따로 계산한다.
+
+사용: uv run python -m eval.evaluate --config E0_naive,E1_structure,E2_header [--split dev] [--limit 5]
       uv run python -m eval.evaluate --validate-only
 """
 
@@ -19,10 +22,16 @@ from pathlib import Path
 from typing import Any
 
 from common.config import PROJECT_ROOT
+from common.usage import Usage, record, tracker
 from eval.configs import get_preset
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
-from rag.retriever import RetrievedChunk, retrieve_with_trace, warmup
+from rag.retriever import (
+    RetrievedChunk,
+    prepare_queries,
+    retrieve_with_trace,
+    warmup,
+)
 
 GOLDEN_PATH = PROJECT_ROOT / "eval" / "golden_set.jsonl"
 RESULTS_DIR = PROJECT_ROOT / "eval" / "results"
@@ -89,14 +98,24 @@ class QuestionResult:
     )  # gold별 첫 적중 순위(1부터)
     first_hit: int | None = None
     candidate_recall: float | None = None  # 1단계 후보(candidate_k개) 안의 gold 비율
+    queries: list[str] = field(
+        default_factory=list
+    )  # 검색에 쓴 질의(term/multi-query 결과)
+    query_prep_ms: float = (
+        0.0  # 질의 준비(Multi-Query LLM 호출 등) 시간 — latency_ms와 별도
+    )
 
     def hit(self, k: int) -> bool:
         """상위 k 안에 gold가 하나라도 있는지."""
         return self.first_hit is not None and self.first_hit <= k
 
-    def recall(self, k: int) -> float:
-        """상위 k 안에 들어온 gold 비율."""
-        found = [r for r in self.gold_ranks.values() if r is not None and r <= k]
+    def recall(self, k: int | None = None) -> float:
+        """상위 k 안에 들어온 gold 비율(k=None이면 확장 청크 포함 전체 결과)."""
+        found = [
+            r
+            for r in self.gold_ranks.values()
+            if r is not None and (k is None or r <= k)
+        ]
         return len(found) / len(self.gold_ranks) if self.gold_ranks else 0.0
 
 
@@ -125,6 +144,7 @@ def score_question(
                 "score": round(c.score, 4),
                 "stage_scores": {k: round(v, 4) for k, v in c.stage_scores.items()},
                 "added_by": c.added_by,
+                "via": c.via,
             }
             for i, c in enumerate(chunks, 1)
         ],
@@ -156,6 +176,11 @@ def aggregate(results: Iterable[QuestionResult]) -> dict[str, float | int]:
     out["full_recall@5"] = (
         sum(r.recall(5) == 1.0 for r in multi) / len(multi) if multi else float("nan")
     )
+    out["recall@ctx"] = sum(r.recall() for r in rs) / len(rs)
+    out["full_recall@ctx"] = (
+        sum(r.recall() == 1.0 for r in multi) / len(multi) if multi else float("nan")
+    )
+    out["avg_ctx_chunks"] = sum(len(r.retrieved) for r in rs) / len(rs)
     out["n_multi"] = len(multi)
     out["mrr"] = sum(1 / r.first_hit if r.first_hit else 0.0 for r in rs) / len(rs)
     cand = [r.candidate_recall for r in rs if r.candidate_recall is not None]
@@ -180,6 +205,11 @@ def summarize(results: list[QuestionResult]) -> dict[str, Any]:
             if t in by_type and t != "out_of_scope"
         },
         "p50_latency_ms": round(statistics.median(r.latency_ms for r in results), 1)
+        if results
+        else None,
+        "p50_query_prep_ms": round(
+            statistics.median(r.query_prep_ms for r in results), 1
+        )
         if results
         else None,
         "refusal_top1_scores": [
@@ -230,23 +260,38 @@ def validate_golden(rows: list[dict[str, Any]]) -> list[str]:
 def run(cfg: RetrievalConfig, questions: list[dict[str, Any]]) -> list[QuestionResult]:
     """프리셋 하나로 모든 문항을 검색·채점한다.
 
-    질의 임베딩은 시작 전에 한 번의 배치로 캐시에 넣는다(게이트웨이 분당 요청 한도 대응).
-    따라서 latency에는 질의 임베딩 API 시간이 포함되지 않는다. BM25·CrossEncoder 로딩도 미리 끝낸다.
+    질의 준비(Term expansion·Multi-Query LLM 호출)는 문항별로 먼저 하고 `query_prep_ms`에 따로 기록한다.
+    모든 질의 임베딩은 한 번의 배치로 캐시에 넣는다(게이트웨이 분당 요청 한도 대응).
+    따라서 latency_ms에는 LLM·임베딩 API 시간이 포함되지 않는다. BM25·CrossEncoder 로딩도 미리 끝낸다.
     """
-    get_embedding_cache().embed([q["question"] for q in questions])
-    warmup(cfg)
-    results = []
+    prepared: list[tuple[list[str], float]] = []
     for q in questions:
         start = time.perf_counter()
-        trace = retrieve_with_trace(q["question"], cfg)
+        queries = prepare_queries(q["question"], cfg)
+        prepared.append((queries, (time.perf_counter() - start) * 1000))
+    get_embedding_cache().embed(
+        list(dict.fromkeys(x for queries, _ in prepared for x in queries))
+    )
+    warmup(cfg)
+    results = []
+    for q, (queries, prep_ms) in zip(questions, prepared, strict=True):
+        start = time.perf_counter()
+        trace = retrieve_with_trace(q["question"], cfg, queries=queries)
         latency = (time.perf_counter() - start) * 1000
         result = score_question(q, trace.results, latency)
         result.candidate_recall = candidate_recall(q["gold"], trace.candidates)
+        result.queries = queries
+        result.query_prep_ms = prep_ms
         results.append(result)
     return results
 
 
-def save(cfg: RetrievalConfig, split: str, results: list[QuestionResult]) -> Path:
+def save(
+    cfg: RetrievalConfig,
+    split: str,
+    results: list[QuestionResult],
+    usage: Usage | None = None,
+) -> Path:
     """결과 JSON을 eval/results/{timestamp}_{config}.json으로 저장한다(덮어쓰지 않음)."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     path = RESULTS_DIR / f"{datetime.now().astimezone():%Y%m%d-%H%M%S}_{cfg.name}.json"
@@ -255,6 +300,7 @@ def save(cfg: RetrievalConfig, split: str, results: list[QuestionResult]) -> Pat
         "split": split,
         "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "summary": summarize(results),
+        "usage": (usage or Usage()).to_dict(),
         "questions": [asdict(r) for r in results],
     }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -270,6 +316,8 @@ def _fmt_row(name: str, s: dict[str, Any]) -> str:
         o.get("full_recall@5"),
         o.get("mrr"),
         o.get("cand_recall", float("nan")),
+        o.get("full_recall@ctx"),
+        o.get("avg_ctx_chunks"),
     ]
     return (
         f"| {name} | "
@@ -286,21 +334,27 @@ def main() -> None:
     )
     parser.add_argument("--split", default="dev", choices=["dev", "test", "all"])
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument("--limit", type=int, help="앞에서 N문항만(개발 중 빠른 확인용)")
     args = parser.parse_args()
 
-    questions = load_golden(split=args.split)
+    questions = load_golden(split=args.split)[: args.limit]
     if errors := validate_golden(load_golden(split="all")):
         raise SystemExit("골든셋 오류:\n" + "\n".join(errors))
     if args.validate_only:
         print(f"골든셋 정상: {args.split} {len(questions)}문항")
         return
 
-    print("| config | Hit@1 | Hit@3 | Hit@5 | Full-R@5 | MRR | Cand-R | p50 |")
-    print("|---|---|---|---|---|---|---|---|")
+    print(
+        "| config | Hit@1 | Hit@3 | Hit@5 | Full-R@5 | MRR | Cand-R | Full-R@ctx | ctx | p50 |"
+    )
+    print("|---|---|---|---|---|---|---|---|---|---|")
     for name in args.config.split(","):
         cfg = get_preset(name)
+        before = tracker.snapshot()
         results = run(cfg, questions)
-        path = save(cfg, args.split, results)
+        usage = tracker.snapshot() - before
+        path = save(cfg, args.split, results, usage)
+        record("eval_retrieval", name, usage)
         print(_fmt_row(name, summarize(results)), f"→ {path.relative_to(PROJECT_ROOT)}")
 
 

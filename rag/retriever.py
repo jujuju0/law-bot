@@ -14,6 +14,7 @@ from rag.bm25 import get_bm25_index
 from rag.chunk_store import get_chunk_store
 from rag.config import RetrievalConfig
 from rag.embeddings import get_embedding_cache
+from rag.query_expansion import get_term_expander, multi_queries
 from rag.reranker import get_cross_encoder, rerank
 from rag.router import parse_article_refs
 from rag.vectorstore import VECTOR_NAME
@@ -33,6 +34,7 @@ class RetrievedChunk:
     score: float
     stage_scores: dict[str, float] = field(default_factory=dict)
     added_by: str = "search"  # search | router | ref | delegation
+    via: str | None = None  # 확장으로 붙은 경우 출발 조 키
     payload: dict[str, Any] = field(default_factory=dict, repr=False)
 
     @property
@@ -79,8 +81,10 @@ def _source_filter(sources: tuple[str, ...]) -> models.Filter:
     )
 
 
-def _dense(question: str, cfg: RetrievalConfig, limit: int) -> list[RetrievedChunk]:
-    vector = get_embedding_cache().embed([question])[0]
+def _dense(
+    query: str, cfg: RetrievalConfig, limit: int, stage: str = "dense"
+) -> list[RetrievedChunk]:
+    vector = get_embedding_cache().embed([query])[0]
     points = (
         _client()
         .query_points(
@@ -94,17 +98,19 @@ def _dense(question: str, cfg: RetrievalConfig, limit: int) -> list[RetrievedChu
         .points
     )
     return [
-        RetrievedChunk.from_payload(p.payload or {}, p.score, "dense") for p in points
+        RetrievedChunk.from_payload(p.payload or {}, p.score, stage) for p in points
     ]
 
 
-def _bm25(question: str, cfg: RetrievalConfig, limit: int) -> list[RetrievedChunk]:
+def _bm25(
+    query: str, cfg: RetrievalConfig, limit: int, stage: str = "bm25"
+) -> list[RetrievedChunk]:
     if cfg.collection != COLLECTION_NAME and cfg.collection != RAW_COLLECTION_NAME:
         raise ValueError(
             f"BM25는 구조 청크(chunks.jsonl) 컬렉션에서만 지원: {cfg.collection}"
         )
-    hits = get_bm25_index().search(question, cfg.sources, limit)
-    return [RetrievedChunk.from_payload(p, s, "bm25") for p, s in hits]
+    hits = get_bm25_index().search(query, cfg.sources, limit)
+    return [RetrievedChunk.from_payload(p, s, stage) for p, s in hits]
 
 
 def _rrf(rankings: list[list[RetrievedChunk]], k: int) -> list[RetrievedChunk]:
@@ -153,12 +159,107 @@ def _route(
     return (routed + rest)[: cfg.top_k]
 
 
+def prepare_queries(question: str, cfg: RetrievalConfig) -> list[str]:
+    """검색 질의 목록: [원 질문(또는 Term expansion 결과)] + Multi-Query 재작성(LLM, 캐시 경유)."""
+    first = get_term_expander().expand(question) if cfg.use_term_expansion else question
+    queries = [first]
+    if cfg.use_multi_query:
+        queries += [q for q in multi_queries(question, cfg.n_queries) if q != first]
+    return queries
+
+
+def _first_stage(
+    queries: list[str], cfg: RetrievalConfig, limit: int
+) -> list[RetrievedChunk]:
+    """질의마다 dense(+BM25) 순위를 만들고, 순위가 2개 이상이면 RRF로 합친다."""
+    rankings = []
+    for i, q in enumerate(queries):
+        suffix = f"@{i}" if i else ""
+        rankings.append(_dense(q, cfg, limit, f"dense{suffix}"))
+        if cfg.use_bm25:
+            rankings.append(_bm25(q, cfg, limit, f"bm25{suffix}"))
+    if len(rankings) == 1:
+        return rankings[0]
+    return _rrf(rankings, cfg.rrf_k)[:limit]
+
+
+def _priority_boost(
+    ranked: list[RetrievedChunk], cfg: RetrievalConfig
+) -> list[RetrievedChunk]:
+    """순위 점수 1/(rrf_k+rank)에 원천 우선순위 가산(priority 1: +boost, 2: +boost/2)으로 재정렬."""
+    bonus = {1: cfg.priority_boost, 2: cfg.priority_boost / 2}
+
+    def key(item: tuple[int, RetrievedChunk]) -> float:
+        rank, c = item
+        return 1 / (cfg.rrf_k + rank) + bonus.get(c.payload.get("priority", 3), 0.0)
+
+    return [c for _, c in sorted(enumerate(ranked, 1), key=key, reverse=True)]
+
+
+def _small_to_big(ranked: list[RetrievedChunk]) -> list[RetrievedChunk]:
+    """같은 조(article_key) 청크를 가장 높은 순위 하나로 합친다. 2개 이상 합쳐진 법령 조는 본문을 조 전체로."""
+    groups: dict[str, list[RetrievedChunk]] = {}
+    for c in ranked:
+        groups.setdefault(c.article_key, []).append(c)
+    merged = []
+    for chunks in groups.values():
+        top = chunks[0]
+        if len(chunks) > 1 and top.source_type in ("law", "decree"):
+            top = replace(
+                top,
+                text=top.parent_text,
+                stage_scores={**top.stage_scores, "merged": len(chunks)},
+            )
+        merged.append(top)
+    return merged
+
+
+def _expansion_targets(c: RetrievedChunk, kind: str) -> list[str]:
+    """확장 대상 조 키. ref: 같은 원천 내 참조, delegation: 위임 상·하위 + 시행령→별표."""
+    p = c.payload
+    if kind == "ref":
+        own = f"{c.source_type}:"
+        return [r for r in p.get("refs", []) if r.startswith(own)]
+    annex = [r for r in p.get("refs", []) if r.startswith("annex:")]
+    return [*p.get("delegates_to", []), *p.get("delegated_from", []), *annex]
+
+
+def _expand(
+    question: str, results: list[RetrievedChunk], cfg: RetrievalConfig, kind: str
+) -> list[RetrievedChunk]:
+    """상위 `expansion_seed_k`개 청크의 연결 조를 최대 `max_expansion`개 뒤에 덧붙인다(`added_by=kind`).
+
+    delegation은 덧붙인 청크도 다시 시드로 삼아 위임 체인(법 → 영 → 별표)을 따라간다.
+    """
+    have = {key for c in results for key in c.keys}
+    floor = min((c.score for c in results), default=1.0) * 0.9
+    queue = list(results[: cfg.expansion_seed_k])
+    added: list[RetrievedChunk] = []
+    while queue and len(added) < cfg.max_expansion:
+        seed = queue.pop(0)
+        for key in _expansion_targets(seed, kind):
+            if len(added) >= cfg.max_expansion:
+                break
+            if key in have or key.split(":", 1)[0] not in cfg.sources:
+                continue
+            if (payload := _representative(question, key)) is None:
+                continue
+            c = RetrievedChunk.from_payload(payload, floor, kind, kind)
+            c.via = seed.article_key
+            added.append(c)
+            have.add(key)
+            if kind == "delegation":
+                queue.append(c)
+    return results + added
+
+
 @dataclass
 class RetrievalTrace:
     """검색 1회의 최종 결과와 중간 후보(평가의 후보 재현율·API debug용)."""
 
     results: list[RetrievedChunk]
     candidates: list[RetrievedChunk]  # 1단계(dense/hybrid) 후보, 최대 candidate_k개
+    queries: list[str] = field(default_factory=list)  # 실제 검색에 쓴 질의
 
 
 def _rerank(
@@ -166,34 +267,47 @@ def _rerank(
 ) -> list[RetrievedChunk]:
     scorer = get_cross_encoder(max_length=cfg.rerank_max_length)
     return rerank(
-        question, candidates, cfg.top_k, field=cfg.rerank_field, scorer=scorer
+        question, candidates, len(candidates), field=cfg.rerank_field, scorer=scorer
     )
 
 
-def retrieve_with_trace(question: str, cfg: RetrievalConfig) -> RetrievalTrace:
-    """질문 → 최종 상위 `cfg.top_k`개 + 1단계 후보. 단계: dense (+ BM25 → RRF) (+ rerank) (+ router)."""
+def retrieve_with_trace(
+    question: str, cfg: RetrievalConfig, queries: list[str] | None = None
+) -> RetrievalTrace:
+    """질문 → 최종 결과 + 1단계 후보.
+
+    단계: 질의 준비(term/multi-query) → dense(+BM25 → RRF) → rerank → priority boost → small-to-big
+    → 상위 top_k → router → ref/delegation expansion(뒤에 덧붙임, 결과는 top_k보다 길 수 있음).
+    `queries`를 주면 질의 준비를 건너뛴다(평가에서 LLM 호출을 지연 측정 밖으로 빼기 위함).
+    """
+    queries = queries or prepare_queries(question, cfg)
     limit = max(cfg.candidate_k, cfg.top_k)
-    candidates = _dense(question, cfg, limit)
-    if cfg.use_bm25:
-        candidates = _rrf([candidates, _bm25(question, cfg, limit)], cfg.rrf_k)[:limit]
-    results = (
-        _rerank(question, candidates, cfg)
-        if cfg.use_rerank
-        else candidates[: cfg.top_k]
-    )
+    candidates = _first_stage(queries, cfg, limit)
+    ranked = _rerank(question, candidates, cfg) if cfg.use_rerank else candidates
+    if cfg.priority_boost:
+        ranked = _priority_boost(ranked, cfg)
+    if cfg.small_to_big:
+        ranked = _small_to_big(ranked)
+    results = ranked[: cfg.top_k]
     if cfg.use_router:
         results = _route(question, results, cfg)
-    return RetrievalTrace(results=results, candidates=candidates)
+    if cfg.use_ref_expansion:
+        results = _expand(question, results, cfg, "ref")
+    if cfg.use_delegation_expansion:
+        results = _expand(question, results, cfg, "delegation")
+    return RetrievalTrace(results=results, candidates=candidates, queries=queries)
 
 
 def warmup(cfg: RetrievalConfig) -> None:
-    """설정에 필요한 무거운 객체(BM25 색인, CrossEncoder)를 미리 로딩한다(지연 측정·서비스 기동용)."""
-    if cfg.use_bm25 or cfg.use_router:
-        get_bm25_index()
+    """설정에 필요한 무거운 객체(BM25 색인, chunk store, CrossEncoder)를 미리 로딩한다(지연 측정·서비스 기동용)."""
+    get_bm25_index()
+    get_chunk_store()
+    if cfg.use_term_expansion:
+        get_term_expander()
     if cfg.use_rerank:
         get_cross_encoder(max_length=cfg.rerank_max_length)
 
 
 def retrieve(question: str, cfg: RetrievalConfig) -> list[RetrievedChunk]:
-    """질문 → 상위 `cfg.top_k`개 청크."""
+    """질문 → 최종 결과(확장 청크 포함)."""
     return retrieve_with_trace(question, cfg).results

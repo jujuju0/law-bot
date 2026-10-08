@@ -43,5 +43,15 @@ RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
 SOURCES_FILE = DATA_DIR / "sources.yaml"
 
+# 크레딧 예산 (DESIGN §9). 단가는 게이트웨이 실측값을 .env에 기록(비어 있으면 0 → 예상 크레딧 0으로 표시)
+LLM_BUDGET_CREDITS = float(os.getenv("LLM_BUDGET_CREDITS") or 26000)
+CREDIT_PER_1K_INPUT = float(os.getenv("CREDIT_PER_1K_INPUT") or 0)
+CREDIT_PER_1K_OUTPUT = float(os.getenv("CREDIT_PER_1K_OUTPUT") or 0)
+CREDIT_PER_1K_EMBED = float(os.getenv("CREDIT_PER_1K_EMBED") or 0)
+
+# LLM 응답 캐시(sqlite)·사용량 장부
+CACHE_DIR = DATA_DIR / "cache"
+USAGE_LEDGER = PROJECT_ROOT / "eval" / "usage_ledger.jsonl"
+
 # /ask 서비스가 사용할 RetrievalConfig 프리셋 이름 (rag/configs.py)
 SERVICE_RETRIEVAL_PRESET = os.getenv("SERVICE_RETRIEVAL_PRESET", "full")

@@ -101,6 +101,23 @@ def test_score_and_aggregate() -> None:
     assert agg["full_recall@5"] == 1.0 and agg["n_multi"] == 1
 
 
+def test_context_recall_counts_appended_expansion() -> None:
+    """확장 청크(6위 이후)는 @5 지표에는 안 잡히고 recall@ctx에만 잡힌다."""
+    q = {
+        "id": "q1",
+        "type": "annex",
+        "question": "",
+        "gold": ["law:제43조", "annex:별표2"],
+        "should_refuse": False,
+    }
+    chunks = [chunk("law:a43"), *[chunk(f"law:a{i}") for i in range(1, 5)]]
+    chunks.append(chunk("annex:2", "annex"))  # delegation expansion으로 6번째에 붙음
+    agg = aggregate([score_question(q, chunks, 1)])
+    assert agg["full_recall@5"] == 0.0 and agg["recall@5"] == 0.5
+    assert agg["full_recall@ctx"] == 1.0 and agg["recall@ctx"] == 1.0
+    assert agg["avg_ctx_chunks"] == 6
+
+
 def test_validate_golden() -> None:
     ok = {
         "id": "q1",
